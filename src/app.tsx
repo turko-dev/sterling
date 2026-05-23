@@ -1,18 +1,86 @@
 "use client"
-import React from 'react';
 import './index.css';
 import { createRoot } from 'react-dom/client';
-import {useState, useEffect, useRef} from 'react'
+import {useState, useEffect} from 'react'
 const root = createRoot(document.body);
 root.render(<Sterling />);
-
 function Sterling() {
 
+    const [openTopicField, setOpenTopicField] = useState<boolean>(false)
+    const [newTopicName, setNewTopicName] = useState<string>("")
+    const [enterPressToggle, setEnterPressToggle] = useState<boolean>(false)
+
+    useEffect(()=> {
+        if(newTopicName != "") {
+            addATopic(newTopicName)
+        }
+        setNewTopicName("")
+        setOpenTopicField(false)
+
+    }, [enterPressToggle])
 
 
+    const addATopic = async (topicName: string) => {
+        const success = await (window as any).electronAPI.addTopic(topicName)
+        console.log(success)
+        getTopicsFile()
+    }
+
+    const enterAddTopic = async function (e: any) {
+        if(openTopicField) {
+            if (e.key === 'Enter') {
+                setEnterPressToggle(!enterPressToggle)
+            }
+            else if(e.key === "Escape") {
+                setOpenTopicField(false)
+                setNewTopicName("")
+            }
+        }
+        else {
+            setNewTopicName("")
+        }
+    }
+
+    useEffect(()=> {
+            if(openTopicField) {
+                document.getElementById("focus")?.focus()
+                document.getElementById('focus')?.addEventListener('keydown', enterAddTopic);
+                
+            }
+            else {
+                document.getElementById('focus')?.removeEventListener('keydown', enterAddTopic);
+
+            }
+        
+    }, [openTopicField])
+
+    const [topicsFile, setTopicsFile] = useState<null>(null);
+    const [noTopics, setNoTopics] = useState(true);
+
+    const [explorerTopicSelection, setExplorerTopicSelection] = useState<number>()
+
+
+   
+
+    
 
     //Get JSON
-    
+    const getTopicsFile = async () => {
+        const {status, data} = await (window as any).electronAPI.getTopics("src/topics.json");
+        const newData = JSON.parse(data)
+        if(newData.status === true) {
+            setNoTopics(false)
+            setTopicsFile(newData)
+        }
+        else {
+            setNoTopics(true)
+        }
+
+    };
+
+    useEffect(() => {
+        getTopicsFile();
+    });
 
 
 
@@ -76,7 +144,6 @@ function Sterling() {
 
     //Explorer Handling
     const [explorerMenu, setExplorerMenu] = useState(true);
-    const [noTopics, setNoTopics] = useState(true);
     
 
     const [errorMsg, setErrorMsg] = useState("Sterling")
@@ -84,6 +151,7 @@ function Sterling() {
         
     return(
         <div className="page">
+            <meta httpEquiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"  />
             <div className="titlebar">
                 <p className="font font-small color-primary font-slim">Sterling</p>
                 <div className="titlebar-item" onMouseEnter={()=> {
@@ -181,13 +249,19 @@ function Sterling() {
                                     <p className="font font-super-small color-fg font-slim">Add Deck</p>
                                 </div>
                             </div>
-                            <div className="explorer-option">
+                            <div className="explorer-option" onClick={()=> {
+                                setOpenTopicField(true)
+                                
+                                //addATopic("Test").then(getTopicsFile)
+                                }}>
                                 <div className="explorer-option-icon add-topic-icon"></div>
                                 <div className="explorer-tooltip">
                                     <p className="font font-super-small color-fg font-slim">Add Topic</p>
                                 </div>
                             </div>
-                            <div className="explorer-option">
+                            <div className="explorer-option" onClick={()=> {
+                                getTopicsFile()
+                            }}>
                                 <div className="explorer-option-icon refresh-icon"></div>
                                <div className="explorer-tooltip">
                                     <p className="font font-super-small color-fg font-slim">Refresh Explorer</p>
@@ -205,25 +279,53 @@ function Sterling() {
                     </div>
                    
                     {noTopics ? <div className="explorer-no-topics"><p className="font font-small color-darkgrey font-slim">You have no topics yet.</p></div> : 
-                    <div>
+                    <div className="explorer-topics">
                         {/* Topics Go Here */}
+                        {topicsFile != null ? Object.entries(topicsFile).map((i: any, key:number)=> {
+                            if(i[0] !== "status") {
+                                return <div className="explorer-topic" key={key} onClick={()=> {
+                                    
+
+                                    if(i[0] == explorerTopicSelection) {
+                                        setExplorerTopicSelection(0)
+
+                                    
+                                    }else {
+                                        setExplorerTopicSelection(i[0])
+                                    }
+                                    
+                                    
+                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary)": "unset"}} >
+                                    <div className="combine">
+                                        <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
+                                    </div>
+                                    {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>topic</i></p> : ""}
+
+
+                                </div>
+                            }
+                        }) : ""}
                     </div>
                     }
+                    <input className="explorer-topic-field font font-small font-slim color-lightgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
+                        
                 </div>
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
                 <div className="inner">
-                    <p className="font font-regular color-fg font-slim">You have no decks</p>
+                    <p className="font font-regular color-fg font-slim"></p>
+
+                    
                 </div>
 
             </div>
             <div className="statusbar">
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
+                    <p className="font font-super-small color-bg font-slim">{explorerTopicSelection}</p>
                 </div>
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{explorerWidth}px</p>
+                    <p className="font font-super-small color-bg font-slim">{newTopicName}px</p>
                 </div>
             </div>
             
