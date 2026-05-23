@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg:rgb(253, 253, 253);
+  --margin:8px;
+  --gap:20px;
+  --primary: #e76b31;
+  --primary-accent: #e97946;
+  --grey: #d1d1d1;
+  --grey-accent: #c1c1c1;
+  --lightgrey:#bebebe;
+  --darkgrey: #646464;
+  --fg: #3d3d3d;
+  --breakpoint:1400px;
+}
+.font-super-small {
+  font-size:0.7rem;
+}
+.font-small {
+  font-size:0.8rem
+}
+.font-regular {
+  font-size:1.1rem;
+}
+.font-medium {
+  font-size:1.5rem;
+}
+.font-large {
+  font-size:2.3rem;
+}
+.font-title {
+  font-size:3.5rem;
+}
+
+
+.color-fg {
+  color: var(--fg);
+}
+.color-bg {
+  color: var(--bg);
+}
+.color-darkgrey {
+  color: var(--darkgrey);
+}
+.color-lightgrey {
+  color: var(--lightgrey);
+}
+.color-grey {
+  color: var(--grey);
+}
+
+.color-primary {
+  color: var(--primary);
+}
+.color-primary-accent {
+  color: var(--primary-accent);
+}
+
+.font-slim {
+  font-weight:400;
+}
+.font-heavy {
+  font-weight:700;
+}
+  
+
+.font {
+  font-family: "Google Sans", sans-serif;
+}
+body {
+  background-color: var(--grey);
+}
+.page {
+  width: 100%;
+  z-index:0;
+  height:100vh;
+  background-color: var(--bg);
+  /* display:flex;
+  justify-content:baseline;
+  align-items:baseline;
+  flex-direction:column; */
+}
+
+.titlebar {
+  user-select:none;
+  app-region: drag;
+
+  width:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  height:40px;
+  background-color: var(--grey);
+  display:flex;
+  align-items:center;
+  justify-content:baseline;
+  gap:var(--margin);
+  padding:var(--margin);
+  z-index:90;
+  color: var(--fg);
+}
+
+.titlebar-item {
+  app-region: no-drag;
+  padding: 6px 8px;
+  transition: background-color 0.2s ease-in-out;
+  border-radius:4px;
+}
+.titlebar-item:hover {
+  background-color:var(--lightgrey);
+}
+.titlebar-menu {
+  position:absolute;
+  top:30px;
+  width:max-content;
+  background-color: var(--bg);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius:var(--margin);
+  display:none;
+  justify-content:space-between;
+  align-items:baseline;
+  flex-direction:column;
+  padding:var(--margin);
+  z-index:100;
+}
+.titlebar-menu-item {
+  width:100%;
+  padding:var(--margin);
+  border-radius:4px;
+  gap:calc(var(--gap) * 2);
+  height:fit-content;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition: background-color 0.1s ease-in-out;
+
+}
+.titlebar-menu-item:first-child {
+  text-align:left;
+}
+.titlebar-menu-item:last-child {
+  text-align:right;
+}
+.titlebar-menu-item:hover {
+  background-color: var(--grey);
+  cursor:pointer;
+}
+.titlebar-menu-item-separator {
+  margin-top:var(--margin);
+  margin-bottom:var(--margin);
+  width:100%;
+  height:1px;
+  background-color: whitesmoke;
+}
+
+
+
+.statusbar {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:22px;
+  background-color: var(--primary);
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  gap:var(--margin);
+  padding:var(--margin);
+  
+}
+.statusbar-item {
+  transition: background-color 0.2s ease-in-out;
+  height:22px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding-left:4px;
+  padding-right:4px;
+}
+.statusbar-item:hover {
+  cursor:pointer;
+  background-color: var(--primary-accent);
+
+}
+
+.page-section {
+  width:100%;
+  height:calc(100vh - 22px);
+  background-color: var(--bg);
+  display:flex;
+  user-select: none;
+  justify-content:center;
+  align-items:center;
+}
+
+
+.explorer {
+  padding-top:40px;
+  display:flex;
+  flex-direction:column;
+  min-width:200px;
+  max-width:800px;
+  align-items:baseline;
+  justify-content:baseline;
+  height:100%;
+  user-select: none;
+  background-color: var(--grey-accent);
+}
+
+.explorer-title {
+
+  gap:var(--margin);
+  width:100%;
+  height:40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:var(--margin);
+}
+
+.explorer-topic {
+  width:100%;
+  height:40px;
+  padding:var(--margin);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition: background-color 0.1s ease-in-out;
+}
+.explorer-topic:hover {
+  background-color: var(--grey);
+  cursor:pointer;
+}
+.explorer-options {
+  gap:4px;
+  width:100%;
+  height:fit-content;
+  display:flex;
+  justify-content:end;
+  align-items:center;
+}
+.explorer-option {
+  width:22px;
+  height:22px;
+  border-radius:4px;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.explorer-option-icon {
+  background-size: contain;
+  background-position: center;
+  height:15px;
+  aspect-ratio:1;
+}
+.explorer-tooltip {
+  display:none;
+  opacity:0;
+  white-space: nowrap;
+  position:absolute;
+  top:27px;
+  width:fit-content;
+  background-color: var(--bg);
+  padding:4px 8px;
+  app-region: no-drag;
+  user-select:none;
+  justify-content: baseline;
+  align-items: baseline;
+
+  border-radius:4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.explorer-option-icon:hover + .explorer-tooltip {
+  display: flex;
+  opacity:1;
+}
+
+.explorer-option:hover {
+  background-color: var(--darkgrey);
+  cursor:pointer;
+}
+.explorer-option:hover .explorer-option-icon {
+  filter:brightness(0) invert(0.8)
+
+}
+.add-deck-icon {
+  background-image: url('./assets/icons/adddeck.png');
+}
+.add-topic-icon {
+  background-image: url('./assets/icons/addtopic.png');
+}
+.refresh-icon {
+  background-image: url('./assets/icons/refresh.png');
+}
+.collapse-icon {
+  background-image: url('./assets/icons/collapse.png');
+
+}
+
+
+
+.explorer-no-topics {
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.explorer-adjustment {
+  -webkit-app-region: no-drag;
+  cursor:e-resize;
+  width:10px;
+  height:100%;
+  background-color: var(--bg);
+  transition:all 0.2s ease-in-out;
+}
+.explorer-adjustment:hover {
+  background-color: var(--primary);
+  
+
+}
+.inner {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  height:100%;
+  
+
+  background-color: var(--bg)
+}
