@@ -9,7 +9,8 @@ function Sterling() {
     const [openTopicField, setOpenTopicField] = useState<boolean>(false)
     const [newTopicName, setNewTopicName] = useState<string>("")
     const [enterPressToggle, setEnterPressToggle] = useState<boolean>(false)
-
+    const [numberTopics, setNumberTopics] = useState<string>("0 Topics")
+    
     useEffect(()=> {
         if(newTopicName != "") {
             addATopic(newTopicName)
@@ -21,8 +22,15 @@ function Sterling() {
 
 
     const addATopic = async (topicName: string) => {
-        const success = await (window as any).electronAPI.addTopic(topicName)
-        console.log(success)
+
+
+        const {success, maxTopicError} = await (window as any).electronAPI.addTopic(topicName)
+        if(maxTopicError) {
+            setNumberTopics("Maximum Number of Topics (15)")
+        }
+        else if(success == false && maxTopicError) {
+            setErrorMsg("There was an error")
+        }
         getTopicsFile()
     }
 
@@ -71,6 +79,18 @@ function Sterling() {
         if(newData.status === true) {
             setNoTopics(false)
             setTopicsFile(newData)
+            var len = Object.keys(newData).length - 1
+            if(len == 1) {
+                setNumberTopics("1 topic")
+            }
+            else if(len > 1 && len < 15) {
+                setNumberTopics(`${len.toString()} topics`)
+            }
+            else if(len == 15) {
+                setNumberTopics("15 topics (maximum)")
+            }
+            
+            
         }
         else {
             setNoTopics(true)
@@ -80,7 +100,7 @@ function Sterling() {
 
     useEffect(() => {
         getTopicsFile();
-    });
+    }, []);
 
 
 
@@ -322,7 +342,7 @@ function Sterling() {
             </div>
             <div className="statusbar">
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{explorerTopicSelection}</p>
+                    <p className="font font-super-small color-bg font-slim">{numberTopics}</p>
                 </div>
                 <div className="statusbar-item">
                     <p className="font font-super-small color-bg font-slim">{newTopicName}px</p>

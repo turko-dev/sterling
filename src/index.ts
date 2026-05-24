@@ -78,43 +78,40 @@ ipcMain.handle("get-topics", async (_event, filePath: string) => {
 
 ipcMain.handle("add-topic", async (_event, topicName: string) => {
 
-  const data = {}
+
+
   const testData = await fs.readFile("src/topics.json", 'utf8')
-
-  try {
-
-
-    
-    const JSONData = JSON.parse(testData)
-    JSONData[v4()] = {
-        "topicTitle": topicName,
-        "topicStatus": false
-    }
-
-    const stringData = JSON.stringify(JSONData, null, "\t")
-    console.log(JSONData)
-    await fs.writeFile("src/topics.json", stringData)
-
-    
-    return { success: true}
-
-  } catch(error:any) {
-    return { success: false}
+  
+  const JSONDataTemp = JSON.parse(testData)
+  let len = 0
+  for(var a in JSONDataTemp){
+    if(a != "status") len += 1
   }
 
-
-  //console.log("main got:", filePath);
-  //Main needs to access FS
-  // try {
-  //   const data = await fs.readFile(filePath, 'utf8');
-  //   return { success: true, data };
-    
-  // } catch (error: any) {
-  //   return { success: false, error: error.message };
-  // }
+  if(len < 15) {
+    try {
+      const JSONData = JSON.parse(testData)
+      JSONData[v4()] = {
+          "topicTitle": topicName,
+          "topicStatus": false
+      }
   
+      const stringData = JSON.stringify(JSONData, null, "\t")
+      await fs.writeFile("src/topics.json", stringData)
+  
+      
+      return { success: true, maxTopicError: false}
+  
+    } catch(error:any) {
+      return { success: false, maxTopicError: false}
+    }
 
+  }
+  else {
+    return { success: false, maxTopicError: true}
+  }
 
+  
 });
 
 
