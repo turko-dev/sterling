@@ -6,11 +6,16 @@ const root = createRoot(document.body);
 root.render(<Sterling />);
 function Sterling() {
 
+
+
+
+
+
     const [openTopicField, setOpenTopicField] = useState<boolean>(false)
     const [newTopicName, setNewTopicName] = useState<string>("")
     const [enterPressToggle, setEnterPressToggle] = useState<boolean>(false)
     const [numberTopics, setNumberTopics] = useState<string>("0 Topics")
-    
+
     useEffect(()=> {
         if(newTopicName != "") {
             addATopic(newTopicName)
@@ -20,10 +25,7 @@ function Sterling() {
 
     }, [enterPressToggle])
 
-
     const addATopic = async (topicName: string) => {
-
-
         const {success, maxTopicError} = await (window as any).electronAPI.addTopic(topicName)
         if(maxTopicError) {
             setNumberTopics("Maximum Number of Topics (15)")
@@ -64,7 +66,6 @@ function Sterling() {
 
     const [topicsFile, setTopicsFile] = useState<null>(null);
     const [noTopics, setNoTopics] = useState(true);
-
     const [explorerTopicSelection, setExplorerTopicSelection] = useState<number>()
 
 
@@ -117,8 +118,15 @@ function Sterling() {
     const [viewMenu, setViewMenu] = useState(false);
     const [helpMenu, setHelpMenu] = useState(false);
 
-
+    const [mousePos, setMousePos] = useState<number[]>([0, 0])
+    const [explorerContextMenuPos, setExplorerContextMenuPos] = useState<number[]>([0, 0])
     window.addEventListener("resize", relieveMenu);
+    const mouseMove = async (e: any) => {
+        setMousePos([e.clientX, e.clientY])
+    }
+
+    window.addEventListener("mousemove", mouseMove)
+                                    
 
     //Explorer Resizing Handling
     const [explorerWidth, setExplorerWidth] = useState(300);
@@ -164,7 +172,7 @@ function Sterling() {
 
     //Explorer Handling
     const [explorerMenu, setExplorerMenu] = useState(true);
-    
+    const [explorerContextMenuKey, setExplorerContextMenuKey] = useState(0)
 
     const [errorMsg, setErrorMsg] = useState("Sterling")
 
@@ -257,7 +265,7 @@ function Sterling() {
 
             </div>
 
-            <div className="page-section" onClick={()=> {relieveMenu()}}>
+            <div className="page-section" onClick={()=> {relieveMenu(); setExplorerContextMenuKey(0)}}>
                 <div className="explorer" style={{display : explorerMenu ? 'flex' : 'none', width: explorerWidth}}>
                     <div className="explorer-title">
                         <p className="font font-super-small color-fg font-bold">EXPLORER</p>
@@ -303,23 +311,28 @@ function Sterling() {
                         {/* Topics Go Here */}
                         {topicsFile != null ? Object.entries(topicsFile).map((i: any, key:number)=> {
                             if(i[0] !== "status") {
-                                return <div className="explorer-topic" key={key} onClick={()=> {
-                                    
+                                return <div className="explorer-topic" key={key} onContextMenu={()=> {
+                                    //Right Click
+                                    setExplorerContextMenuKey(key)
+                                    setExplorerContextMenuPos(mousePos)
 
+                                }} onClick={()=> {
                                     if(i[0] == explorerTopicSelection) {
                                         setExplorerTopicSelection(0)
-
-                                    
                                     }else {
                                         setExplorerTopicSelection(i[0])
                                     }
-                                    
-                                    
-                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary)": "unset"}} >
-                                    <div className="combine">
-                                        <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
-                                    </div>
+                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "grey": "unset"}} >
+                                    <div className="explorer-topic-inner">
+                                        <div className="combine">
+                                            <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
+                                        </div>
                                     {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>topic</i></p> : ""}
+
+                                    </div>
+                                    <div className="explorer-topic-context-menu" style={{display: explorerContextMenuKey == key ? "flex" : "none", left: explorerContextMenuPos[0], top: explorerContextMenuPos[1]}}>
+                                        <p className="font font-super-small font-slim color-fg">Test</p>
+                                    </div>
 
 
                                 </div>
@@ -345,7 +358,7 @@ function Sterling() {
                     <p className="font font-super-small color-bg font-slim">{numberTopics}</p>
                 </div>
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{newTopicName}px</p>
+                    <p className="font font-super-small color-bg font-slim">{mousePos}px</p>
                 </div>
             </div>
             
