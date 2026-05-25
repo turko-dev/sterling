@@ -76,6 +76,78 @@ ipcMain.handle("get-topics", async (_event, filePath: string) => {
 
 });
 
+
+ipcMain.handle("delete-topic", async (_event, key:number) => {
+
+  try {
+    //await fs.writeFile("src/topics.json", stringData)
+    const testData = await fs.readFile("src/topics.json", 'utf8')
+
+    const JSONData = JSON.parse(testData)
+
+
+    let newData: any = {}
+
+
+    Object.entries(JSONData).map((i: any, k: number) => {
+      if(k != key) {
+        newData[i[0]] = i[1]
+      }
+    })
+
+    
+    const stringData = JSON.stringify(newData, null, "\t")
+    await fs.writeFile("src/topics.json", stringData)
+
+    return {success: true}
+
+  } catch(err: any) {
+    return {success:false}
+  }
+
+
+  // try {
+  
+  //     const stringData = JSON.stringify(JSONData, null, "\t")
+  //     await fs.writeFile("src/topics.json", stringData)
+
+      
+  //     return { success: true}
+  
+  //   } catch(error:any) {
+  //     return { success: false}
+  //   }
+
+})
+
+ipcMain.handle("rename-topic", async (_event, key:number, rename:string) => {
+  try {
+    const testData = await fs.readFile("src/topics.json", "utf8")
+  
+    const JSONDataTemp = JSON.parse(testData)
+  
+    let newData: any = {}
+    Object.entries(JSONDataTemp).map((i: any, k:number) => {
+      if(k == key) {
+        let testVal = i[1]
+        testVal.topicTitle = rename
+        newData[i[0]] = testVal
+      }
+      else {
+        newData[i[0]] = i[1]
+      }
+    })
+    const stringData = JSON.stringify(newData, null, "\t")
+    await fs.writeFile("src/topics.json", stringData)
+    return {success: true}
+
+  } catch(error: any) {
+    return {success:false}
+  }
+
+
+})
+
 ipcMain.handle("add-topic", async (_event, topicName: string) => {
 
 
@@ -113,6 +185,8 @@ ipcMain.handle("add-topic", async (_event, topicName: string) => {
 
   
 });
+
+
 
 
 app.on('ready', createWindow);

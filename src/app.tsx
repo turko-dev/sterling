@@ -6,9 +6,27 @@ const root = createRoot(document.body);
 root.render(<Sterling />);
 function Sterling() {
 
+    const [renameTopicField, setRenameTopicField] = useState<number>(0);
+    const [renameTopicName, setRenameTopicName] = useState<string>("");
 
 
+    const renameATopic = async (key: number, rename: string) => {
+        const {success} = await (window as any).electronAPI.renameTopic(key, rename)
+        if(success == false) {
+            setErrorMsg("There was an error renaming a topic.")
+        }
+        getTopicsFile()
+    }
 
+
+    const deleteATopic = async (key: number) => {
+        const {success} = await (window as any).electronAPI.deleteTopic(key)
+        if(success == false) {
+            setErrorMsg("There was an error deleting a topic.")
+        }
+        getTopicsFile()
+
+    }
 
 
     const [openTopicField, setOpenTopicField] = useState<boolean>(false)
@@ -25,13 +43,19 @@ function Sterling() {
 
     }, [enterPressToggle])
 
+    const relieveTopicField = () => {
+        setOpenTopicField(false)
+        setNewTopicName("")
+    }
+
+    
     const addATopic = async (topicName: string) => {
         const {success, maxTopicError} = await (window as any).electronAPI.addTopic(topicName)
         if(maxTopicError) {
             setNumberTopics("Maximum Number of Topics (15)")
         }
         else if(success == false && maxTopicError) {
-            setErrorMsg("There was an error")
+            setErrorMsg("There was an error adding a topic.")
         }
         getTopicsFile()
     }
@@ -42,8 +66,7 @@ function Sterling() {
                 setEnterPressToggle(!enterPressToggle)
             }
             else if(e.key === "Escape") {
-                setOpenTopicField(false)
-                setNewTopicName("")
+                relieveTopicField()
             }
         }
         else {
@@ -180,7 +203,7 @@ function Sterling() {
     return(
         <div className="page">
             <meta httpEquiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"  />
-            <div className="titlebar">
+            <div className="titlebar" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setExplorerContextMenuKey(0)}}>
                 <p className="font font-small color-primary font-slim">Sterling</p>
                 <div className="titlebar-item" onMouseEnter={()=> {
                     if(menuHover == true) {
@@ -268,7 +291,7 @@ function Sterling() {
             <div className="page-section" onClick={()=> {relieveMenu(); setExplorerContextMenuKey(0)}}>
                 <div className="explorer" style={{display : explorerMenu ? 'flex' : 'none', width: explorerWidth}}>
                     <div className="explorer-title">
-                        <p className="font font-super-small color-fg font-bold">EXPLORER</p>
+                        <p onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}} className="font font-super-small color-fg font-bold">EXPLORER</p>
                         
                         <div className="explorer-options">
                             <div className="explorer-option">
@@ -296,10 +319,10 @@ function Sterling() {
                                 </div>
                                 
                             </div>
-                            <div className="explorer-option">
+                            <div className="explorer-option" onClick={()=> {setExplorerMenu(!explorerMenu)}}>
                                 <div className="explorer-option-icon collapse-icon"></div>
                                 <div className="explorer-tooltip">
-                                    <p className="font font-super-small color-fg font-slim">Collapse Topics</p>
+                                    <p className="font font-super-small color-fg font-slim">Hide Explorer</p>
                                 </div>
                                 
                             </div>
@@ -307,14 +330,15 @@ function Sterling() {
                     </div>
                    
                     {noTopics ? <div className="explorer-no-topics"><p className="font font-small color-darkgrey font-slim">You have no topics yet.</p></div> : 
-                    <div className="explorer-topics">
+                    <div className="explorer-topics" onContextMenu={()=> {relieveTopicField(); relieveMenu()}} onClick={()=> {relieveTopicField(); relieveMenu()}}>
                         {/* Topics Go Here */}
                         {topicsFile != null ? Object.entries(topicsFile).map((i: any, key:number)=> {
                             if(i[0] !== "status") {
-                                return <div className="explorer-topic" key={key} onContextMenu={()=> {
+                                return renameTopicField != key ? <div className="explorer-topic" key={key} onContextMenu={()=> {
                                     //Right Click
                                     setExplorerContextMenuKey(key)
                                     setExplorerContextMenuPos(mousePos)
+                                    setExplorerTopicSelection(i[0])
 
                                 }} onClick={()=> {
                                     if(i[0] == explorerTopicSelection) {
@@ -322,31 +346,63 @@ function Sterling() {
                                     }else {
                                         setExplorerTopicSelection(i[0])
                                     }
-                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "grey": "unset"}} >
-                                    <div className="explorer-topic-inner">
+                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary-dark)": "unset"}}>
+                                    <div className={`${explorerTopicSelection == i[0] ? "explorer-topic-inner-no-hover" : "explorer-topic-inner"}`}>
                                         <div className="combine">
                                             <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
                                         </div>
-                                    {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>topic</i></p> : ""}
+                                    {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>empty</i></p> : ""}
 
                                     </div>
+
                                     <div className="explorer-topic-context-menu" style={{display: explorerContextMenuKey == key ? "flex" : "none", left: explorerContextMenuPos[0], top: explorerContextMenuPos[1]}}>
-                                        <p className="font font-super-small font-slim color-fg">Test</p>
+                                        <div className="explorer-topic-context-menu-item" onClick={()=> {
+                                            //Delete Function
+                                            deleteATopic(key)
+
+                                        }}>
+                                            <p className="font font-super-small font-slim color-fg">Delete</p>
+                                            <p className="font font-super-small font-slim color-lightgrey">Del</p>
+
+
+                                        </div>
+                                        <div className="explorer-topic-context-menu-item" onClick={()=> {
+                                            //Rename Function
+                                            setRenameTopicField(key)
+                                        }}>
+                                            <p className="font font-super-small font-slim color-fg">Rename</p>
+                                            <p className="font font-super-small font-slim color-lightgrey">Ctrl + Shift + R</p>
+                                        </div>
                                     </div>
 
+                                </div> : <input autoFocus onKeyDown={(e)=> {
+                                    if(e.key == "Escape") {
+                                        setRenameTopicField(0)
+                                        setRenameTopicName("")
+                                    }
+                                    else if(e.key == "Enter") {
+                                        //Rename
+                                        renameATopic(renameTopicField, renameTopicName)
+                                        setRenameTopicField(0)
+                                        setRenameTopicName("")
+                                    }
 
-                                </div>
+
+                                }} className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={(e)=> {setRenameTopicName(e.target.value)}} />
                             }
                         }) : ""}
                     </div>
                     }
-                    <input className="explorer-topic-field font font-small font-slim color-lightgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
+                    <input className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
+                    <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}}>
                         
+                    </div>
                 </div>
+                
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
-                <div className="inner">
+                <div className="inner" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}}>
                     <p className="font font-regular color-fg font-slim"></p>
 
                     
@@ -358,7 +414,7 @@ function Sterling() {
                     <p className="font font-super-small color-bg font-slim">{numberTopics}</p>
                 </div>
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{mousePos}px</p>
+                    <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
                 </div>
             </div>
             

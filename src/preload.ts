@@ -11,5 +11,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addTopic: (topicName: string) => {
     return ipcRenderer.invoke("add-topic", topicName);
   },
+  deleteTopic: (key: number) => {
+    return ipcRenderer.invoke("delete-topic", key)
+  },
+  renameTopic: (key: number, rename: string) => {
+    return ipcRenderer.invoke("rename-topic", key, rename)
+  }
   
 });
