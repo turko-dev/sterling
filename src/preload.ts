@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   renameTopic: (key: number, rename: string) => {
     return ipcRenderer.invoke("rename-topic", key, rename)
+  },
+  getDecksFromTopic: (key: number) => {
+    return ipcRenderer.invoke("get-decks-from-topic", key)
   }
   
 });

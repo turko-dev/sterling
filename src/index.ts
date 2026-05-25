@@ -11,17 +11,7 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
 const fs = require("fs/promises");
-
-// ipcMain.handle("getTopics", async (event) => {
-//   fs.readFile('topics.json', function(err: any, data: any) { 
-//             if (err) throw err; 
-//             return "hi"
-//         }); 
-// });
-
-
 
 const createWindow = (): void => {
   // Create the browser window.
@@ -53,19 +43,12 @@ const createWindow = (): void => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   mainWindow.maximize();
 
-  // Open the DevTools.
+
+  //Open Dev Tools
   mainWindow.webContents.openDevTools()
 };
 
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-
-
 ipcMain.handle("get-topics", async (_event, filePath: string) => {
-  //console.log("main got:", filePath);
-  //Main needs to access FS
   try {
     const data = await fs.readFile(filePath, 'utf8');
     return { success: true, data };
@@ -80,14 +63,10 @@ ipcMain.handle("get-topics", async (_event, filePath: string) => {
 ipcMain.handle("delete-topic", async (_event, key:number) => {
 
   try {
-    //await fs.writeFile("src/topics.json", stringData)
     const testData = await fs.readFile("src/topics.json", 'utf8')
-
     const JSONData = JSON.parse(testData)
 
-
     let newData: any = {}
-
 
     Object.entries(JSONData).map((i: any, k: number) => {
       if(k != key) {
@@ -95,7 +74,6 @@ ipcMain.handle("delete-topic", async (_event, key:number) => {
       }
     })
 
-    
     const stringData = JSON.stringify(newData, null, "\t")
     await fs.writeFile("src/topics.json", stringData)
 
@@ -104,20 +82,27 @@ ipcMain.handle("delete-topic", async (_event, key:number) => {
   } catch(err: any) {
     return {success:false}
   }
+})
 
 
-  // try {
-  
-  //     const stringData = JSON.stringify(JSONData, null, "\t")
-  //     await fs.writeFile("src/topics.json", stringData)
+ipcMain.handle("get-decks-from-topic", async (_event, key: number) => {
+  try {
 
-      
-  //     return { success: true}
-  
-  //   } catch(error:any) {
-  //     return { success: false}
-  //   }
+    const testData = await fs.readFile("src/topics.json", "utf8")
+    const JSONData = JSON.parse(testData)
 
+    let newData: any = {}
+    Object.entries(JSONData).map((i: any, k: number) => {
+      if(k == key) {
+        newData[i[0]] = i[1]
+      }
+    })
+    console.log(newData)
+
+    return {success:true, data: newData}
+  } catch(error:any) {
+    return {success:false, data: null}
+  }
 })
 
 ipcMain.handle("rename-topic", async (_event, key:number, rename:string) => {
@@ -147,6 +132,8 @@ ipcMain.handle("rename-topic", async (_event, key:number, rename:string) => {
 
 
 })
+
+
 
 ipcMain.handle("add-topic", async (_event, topicName: string) => {
 

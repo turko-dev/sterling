@@ -10,6 +10,18 @@ function Sterling() {
     const [renameTopicName, setRenameTopicName] = useState<string>("");
 
 
+    const [decksFromTopic, setDecksFromTopic] = useState<any>(null)
+
+    const getDecksFromTopic = async (key: number) => {
+        const {success, data} = await (window as any).electronAPI.getDecksFromTopic(key)
+        if(success == false) {
+            setErrorMsg("There was an error getting the decks from a topic.")
+        }
+        else {
+            setDecksFromTopic(data)
+        }
+    }
+
     const renameATopic = async (key: number, rename: string) => {
         const {success} = await (window as any).electronAPI.renameTopic(key, rename)
         if(success == false) {
@@ -339,12 +351,14 @@ function Sterling() {
                                     setExplorerContextMenuKey(key)
                                     setExplorerContextMenuPos(mousePos)
                                     setExplorerTopicSelection(i[0])
+                                    
 
                                 }} onClick={()=> {
                                     if(i[0] == explorerTopicSelection) {
                                         setExplorerTopicSelection(0)
                                     }else {
                                         setExplorerTopicSelection(i[0])
+                                        getDecksFromTopic(key)
                                     }
                                     }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary-dark)": "unset"}}>
                                     <div className={`${explorerTopicSelection == i[0] ? "explorer-topic-inner-no-hover" : "explorer-topic-inner"}`}>
@@ -352,9 +366,7 @@ function Sterling() {
                                             <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
                                         </div>
                                     {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>empty</i></p> : ""}
-
                                     </div>
-
                                     <div className="explorer-topic-context-menu" style={{display: explorerContextMenuKey == key ? "flex" : "none", left: explorerContextMenuPos[0], top: explorerContextMenuPos[1]}}>
                                         <div className="explorer-topic-context-menu-item" onClick={()=> {
                                             //Delete Function
@@ -403,7 +415,20 @@ function Sterling() {
                     
                 </div>
                 <div className="inner" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}}>
-                    <p className="font font-regular color-fg font-slim"></p>
+                    <p className="font font-regular color-fg font-slim">
+                        {decksFromTopic != null ? Object.entries(decksFromTopic).map((i: any, key:number)=> {
+
+                            if(i[1].topicStatus) {
+                                //There is decks in this topic - display decks to user
+                                return <p className="font font-regular color-fg font-slim">{i[1].topicTitle} has decks.</p>
+                            }
+                            else {
+                                
+                                //There is no decks - prompt user to add decks
+                                return <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                            }
+                        }) : "Select a topic to view its decks."}
+                    </p>
 
                     
                 </div>
