@@ -406,7 +406,8 @@ function Sterling() {
                     </div>
                     }
                     <input className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
-                    <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}}>
+                    <div className="explorer-remaining" onClick={()=> {
+                        relieveTopicField(); setExplorerTopicSelection(0)}}>
                         
                     </div>
                 </div>
@@ -419,16 +420,31 @@ function Sterling() {
 
                             if(i[1].topicStatus) {
                                 //There is decks in this topic - display decks to user
-                                return <p className="font font-regular color-fg font-slim">{i[1].topicTitle} has decks.</p>
-                                
+                                return (<div className="decks-page">
+
+                                    <div className="vertbine">
+                                        <p className="font font-title color-fg font-slim">{i[1].topicTitle}</p>
+                                        <p className="font font-regular color-fg font-slim">{Object.keys(i[1].decks).length} decks.</p>
+                                        <div className="button">
+                                            <p className="font font-small color-bg font-slim">Start</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="button">
+                                        <p className="font font-small color-bg font-slim">Add Deck</p>
+                                    </div>
+
+                                </div>)
                             }
                             else {
                                 
                                 //There is no decks - prompt user to add decks
 
                                 return(<div className="decks-page">
-                                    <h1 className="font font-large color-fg font-slim">{i[1].topicTitle}</h1>
-                                    <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                                    <div className="vertbine">
+                                        <h1 className="font font-title color-fg font-slim">{i[1].topicTitle}</h1>
+                                        <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                                    </div>
                                     <div className="button">
                                         <p className="font font-small color-bg font-slim">Add Deck</p>
                                     </div>

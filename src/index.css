@@ -21,6 +21,13 @@
   --fg: #3d3d3d;
   --breakpoint:1400px;
 }
+.vertbine {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:var(--gap);
+  flex-direction: column;
+}
 .combine {
   display: flex;
   justify-content: baseline;
@@ -61,7 +68,7 @@
   height: calc(100% - 40px);
   margin-top:40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
   gap:var(--margin);
