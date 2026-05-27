@@ -365,7 +365,7 @@ function Sterling() {
                                         <div className="combine">
                                             <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
                                         </div>
-                                    {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>empty</i></p> : ""}
+                                    {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>empty</i></p> : <p className="font font-super-small font-slim color-darkgrey"><i>{Object.keys(i[1].decks).length} deck(s)</i></p>}
                                     </div>
                                     <div className="explorer-topic-context-menu" style={{display: explorerContextMenuKey == key ? "flex" : "none", left: explorerContextMenuPos[0], top: explorerContextMenuPos[1]}}>
                                         <div className="explorer-topic-context-menu-item" onClick={()=> {
@@ -414,21 +414,28 @@ function Sterling() {
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
-                <div className="inner" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}}>
-                    <p className="font font-regular color-fg font-slim">
-                        {decksFromTopic != null ? Object.entries(decksFromTopic).map((i: any, key:number)=> {
+                <div className="inner" onClick={()=> {relieveTopicField();}}>
+                        {decksFromTopic != null && explorerTopicSelection != 0 ? Object.entries(decksFromTopic).map((i: any, key:number)=> {
 
                             if(i[1].topicStatus) {
                                 //There is decks in this topic - display decks to user
                                 return <p className="font font-regular color-fg font-slim">{i[1].topicTitle} has decks.</p>
+                                
                             }
                             else {
                                 
                                 //There is no decks - prompt user to add decks
-                                return <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+
+                                return(<div className="decks-page">
+                                    <h1 className="font font-large color-fg font-slim">{i[1].topicTitle}</h1>
+                                    <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                                    <div className="button">
+                                        <p className="font font-small color-bg font-slim">Add Deck</p>
+                                    </div>
+                                </div>)
+
                             }
-                        }) : "Select a topic to view its decks."}
-                    </p>
+                        }) : <p className="font font-regular color-fg font-slim">Select a topic to view its decks.</p>}
 
                     
                 </div>
