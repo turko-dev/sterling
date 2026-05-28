@@ -87,6 +87,37 @@
   cursor:pointer
 }
 
+.free-window {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #3d3d3d3f;
+}
+.free-window-inner {
+  width:80%;
+  height:80%;
+  background-color: white;
+  display: flex;
+  justify-content: baseline;
+  align-items: baseline;
+
+}
+
+.free-window-header {
+  width:100%;
+  height:fit-content;
+  padding:var(--gap);
+  background-color: whitesmoke;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .decks-page {
   width:100%;
   height: calc(100% - 40px);

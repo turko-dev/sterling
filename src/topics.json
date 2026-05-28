@@ -2,20 +2,16 @@
 	"status": true,
 	"82f30915-14d0-4d4c-b4f0-bedbeee2d21d": {
 		"deckTitle": "Maths",
+		"deckStatus": false
+	},
+	"4225b504-9850-4990-8b0d-8bbbc5a9bee0": {
+		"deckTitle": "jonadsk ",
 		"deckStatus": true,
 		"cards": [
 			[
-				"front",
-				"back"
-			],
-			[
-				"front agaon",
-				"agpmaksld"
+				"aomps kd",
+				"opamsld ;"
 			]
 		]
-	},
-	"3217cf4a-3d86-4230-af30-64f508cccb68": {
-		"deckTitle": "Change Again",
-		"deckStatus": false
 	}
 }

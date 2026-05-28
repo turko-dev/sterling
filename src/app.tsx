@@ -6,6 +6,9 @@ const root = createRoot(document.body);
 root.render(<Sterling />);
 function Sterling() {
 
+
+    const [modifyDeckWindow, setModifyDeckWindow] = useState<boolean>(false);
+
     const triggerHelpAutoFormat = () => {
 
     }
@@ -19,7 +22,7 @@ function Sterling() {
     const [cardFront, setCardFront] = useState<string>("")
     const [cardBack, setCardBack] = useState<string>("")
 
-
+    const [explorerKey, setExplorerKey] = useState<number>(0)
     const addACard = async (deckId: string, front:string, back:string) => {
 
         
@@ -35,7 +38,9 @@ function Sterling() {
         else {
             setAddDeckMsg([false, "Could Not Add Card"])
         }
+        getDecksFile()
 
+        getCardsFromDeck(explorerKey)
 
     }
 
@@ -46,10 +51,23 @@ function Sterling() {
 
     const [cardsFromDeck, setCardsFromDeck] = useState<any>(null)
 
+    const getCardsFromId = async (id: string) => {
+        if(id != "0") {
+            const {success, data} = await (window as any).electronAPI.getCardsFromId(id)
+            if(success == false) {
+                setErrorMsg("There was an error getting the cards from a deck.")
+            }
+            else {
+                setCardsFromDeck(data)
+            }
+        }
+
+    }
+
     const getCardsFromDeck = async (key: number) => {
         const {success, data} = await (window as any).electronAPI.getCardsFromDeck(key)
         if(success == false) {
-            setErrorMsg("There was an error getting the decks from a topic.")
+            setErrorMsg("There was an error getting the cards from a deck.")
         }
         else {
             setCardsFromDeck(data)
@@ -57,6 +75,7 @@ function Sterling() {
     }
 
     const renameADeck = async (key: number, rename: string) => {
+        console.log(key, rename)
         const {success} = await (window as any).electronAPI.renameDeck(key, rename)
         if(success == false) {
             setErrorMsg("There was an error renaming a topic.")
@@ -82,7 +101,7 @@ function Sterling() {
 
     useEffect(()=> {
         if(newTopicName != "") {
-            addATopic(newTopicName)
+            addADeck(newTopicName)
         }
         setNewTopicName("")
         setOpenTopicField(false)
@@ -95,8 +114,8 @@ function Sterling() {
     }
 
     
-    const addATopic = async (topicName: string) => {
-        const {success, maxTopicError} = await (window as any).electronAPI.addTopic(topicName)
+    const addADeck = async (topicName: string) => {
+        const {success, maxTopicError} = await (window as any).electronAPI.addDeck(topicName)
         if(maxTopicError) {
             setNumberTopics("Maximum Number of Topics (15)")
         }
@@ -106,7 +125,7 @@ function Sterling() {
         getDecksFile()
     }
 
-    const enterAddTopic = async function (e: any) {
+    const enterAddDeck = async function (e: any) {
         if(openTopicField) {
             if (e.key === 'Enter') {
                 setEnterPressToggle(!enterPressToggle)
@@ -123,21 +142,27 @@ function Sterling() {
     useEffect(()=> {
             if(openTopicField) {
                 document.getElementById("focus")?.focus()
-                document.getElementById('focus')?.addEventListener('keydown', enterAddTopic);
+                document.getElementById('focus')?.addEventListener('keydown', enterAddDeck);
                 
             }
             else {
-                document.getElementById('focus')?.removeEventListener('keydown', enterAddTopic);
+                document.getElementById('focus')?.removeEventListener('keydown', enterAddDeck);
 
             }
         
     }, [openTopicField])
 
+    
     const [decksFile, setDecksFile] = useState<null>(null);
     const [noDecks, setNoDecks] = useState(true);
-    const [explorerTopicSelection, setExplorerTopicSelection] = useState<number>()
-
-
+    const [explorerTopicSelection, setExplorerTopicSelection] = useState<number | string>(0)
+    
+    
+    useEffect(()=> {
+        if(explorerTopicSelection == 0) {
+            setExplorerKey(0)
+        }
+    }, [explorerTopicSelection])
    
 
     
@@ -349,7 +374,7 @@ function Sterling() {
                             <div className="explorer-option" onClick={()=> {
                                 setOpenTopicField(true)
                                 
-                                //addATopic("Test").then(getTopicsFile)
+                                //addADeck("Test").then(getTopicsFile)
                                 }}>
                                 <div className="explorer-option-icon add-topic-icon"></div>
                                 <div className="explorer-tooltip">
@@ -388,11 +413,15 @@ function Sterling() {
                                     
 
                                 }} onClick={()=> {
+                                    
                                     if(i[0] == explorerTopicSelection) {
                                         setExplorerTopicSelection(0)
+                                        setExplorerKey(0)
                                     }else {
                                         setExplorerTopicSelection(i[0])
                                         getCardsFromDeck(key)
+                                        setExplorerKey(key)
+
                                     }
                                     }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary-dark)": "unset"}}>
                                     <div className={`${explorerTopicSelection == i[0] ? "explorer-topic-inner-no-hover" : "explorer-topic-inner"}`}>
@@ -447,6 +476,15 @@ function Sterling() {
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
+                <div className="free-window" style={{display: modifyDeckWindow ? "flex":"none"}}>
+                    <div className="free-window-inner">
+                        <div className="free-window-header">
+                            <p className="font font-slim color-fg font-small">Modify Deck</p>
+
+                            <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setModifyDeckWindow(false)}}>x</p>
+                        </div>
+                    </div>
+                </div>
                 <div className="inner" onClick={()=> {relieveTopicField();}}>
                         {cardsFromDeck != null && explorerTopicSelection != 0 ? Object.entries(cardsFromDeck).map((i: any, key:number)=> {
                             if(i[1].deckStatus) {
@@ -477,7 +515,7 @@ function Sterling() {
                     
                                             
                                             <div className="combine">
-                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack)}}>
+                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack);}}>
                                                     <p className="font font-small color-bg font-slim">Add</p>
                                                 </div> 
                                                 <div className="button" onClick={()=> {setOpenCardField(false)}}>
@@ -501,7 +539,10 @@ function Sterling() {
                                             <p className="font font-small color-bg font-slim">Start</p>
                                         </div>
                                         <div className="button" onClick={()=> setOpenCardField(true)}>
-                                            <p className="font font-small color-bg font-slim">Add Deck</p>
+                                            <p className="font font-small color-bg font-slim">Add Card</p>
+                                        </div>
+                                        <div className="button" onClick={()=> setModifyDeckWindow(true)}>
+                                            <p className="font font-small color-bg font-slim">Modify Deck</p>
                                         </div>
                                     </div>
                                 </div>)
@@ -510,6 +551,8 @@ function Sterling() {
                             else {
                                 //There is no decks - prompt user to add decks
                                 if(openCardField && explorerTopicSelection != 0) {
+
+                                    //No Decks Addition
                                     return(
                                         <div className="decks-page">
                                             <div className="vertbine">
@@ -537,7 +580,7 @@ function Sterling() {
                     
                                             
                                             <div className="combine">
-                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack)}}>
+                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack);}}>
                                                     <p className="font font-small color-bg font-slim">Add</p>
                                                 </div> 
                                                 <div className="button" onClick={()=> {setOpenCardField(false)}}>
@@ -571,10 +614,17 @@ function Sterling() {
             </div>
             <div className="statusbar">
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{numberTopics}</p>
+                    <p className="font font-super-small color-bg font-slim">{explorerTopicSelection}</p>
                 </div>
                 <div className="statusbar-item">
+                    <p className="font font-super-small color-bg font-slim">{explorerKey}</p>
+                </div>
+
+                <div className="statusbar-item">
                     <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
+                </div>
+                <div className="statusbar-item">
+                    <p className="font font-super-small color-bg font-slim">{explorerKey}</p>
                 </div>
                 
             </div>

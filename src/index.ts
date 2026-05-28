@@ -104,6 +104,27 @@ ipcMain.handle("get-cards-from-deck", async (_event, key: number) => {
   }
 })
 
+ipcMain.handle("get-cards-from-id", async (_event, id: string) => {
+  try {
+    const testData = await fs.readFile("src/topics.json", "utf8")
+    const JSONData = JSON.parse(testData)
+
+    let newData: any = {}
+
+    Object.entries(JSONData).map((i: any, k: number) => {
+      if(i == id) {
+        newData[i[0]] = i[1]
+        console.log(i)
+        console.log(id)
+      }
+    })
+    return {success:true, data: newData}
+    
+  } catch(error: any) {
+    return {success: false, data: null}
+  }
+})
+
 ipcMain.handle("rename-deck", async (_event, key:number, rename:string) => {
   try {
     const testData = await fs.readFile("src/topics.json", "utf8")
@@ -114,7 +135,7 @@ ipcMain.handle("rename-deck", async (_event, key:number, rename:string) => {
     Object.entries(JSONDataTemp).map((i: any, k:number) => {
       if(k == key) {
         let testVal = i[1]
-        testVal.topicTitle = rename
+        testVal.deckTitle = rename
         newData[i[0]] = testVal
       }
       else {
