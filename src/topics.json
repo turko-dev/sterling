@@ -1,20 +1,21 @@
 {
 	"status": true,
 	"82f30915-14d0-4d4c-b4f0-bedbeee2d21d": {
-		"topicTitle": "Maths",
-		"topicStatus": false
+		"deckTitle": "Maths",
+		"deckStatus": true,
+		"cards": [
+			[
+				"front",
+				"back"
+			],
+			[
+				"front agaon",
+				"agpmaksld"
+			]
+		]
 	},
 	"3217cf4a-3d86-4230-af30-64f508cccb68": {
-		"topicTitle": "Change Again",
-		"topicStatus": true,
-		"decks": {
-			"deck1": {
-				
-			},
-			"deck2": {
-				
-			}
-		}
-		
+		"deckTitle": "Change Again",
+		"deckStatus": false
 	}
 }

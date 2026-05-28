@@ -67,6 +67,11 @@
   cursor:pointer;
 }
 
+.underline {
+  cursor:pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .primary-button {
   padding:15px 28px;
   border-radius:var(--breakpoint);
@@ -98,7 +103,23 @@
   border-radius:var(--margin);
   height:100px;
   overflow:hidden;
+  resize:none
 
+
+}
+.red-dot {
+  width:5px;
+  height:5px;
+  border-radius:10px;
+  background-color: rgb(240, 51, 51);
+  transition:all 0.25s ease-in-out
+}
+.green-dot {
+  width:5px;
+  height:5px;
+  border-radius:10px;
+  background-color: rgb(87, 231, 51);
+  transition:all 0.25s ease-in-out
 
 }
 .downbine {
@@ -131,6 +152,12 @@
 }
 .color-primary-accent {
   color: var(--primary-accent);
+}
+.color-red {
+  color: #e76b31;
+}
+.color-green {
+  color: rgb(117, 221, 117);
 }
 
 .font-slim {
@@ -499,5 +526,26 @@ body {
   align-items:center;
   width:100%;
   height:100%;
-  background-color: var(--bg)
+  background-color: var(--bg);
+  transition:opacity 0.5s ease-in-out;
+  text-align: center;
+}
+
+@media all and (max-width:1200px) {
+  .deck-input {
+  width:calc(100% - 2 * var(--gap));
+  padding:var(--gap);
+  border-radius:var(--margin);
+  height:100px;
+  overflow:hidden;
+  resize:none
+
+
+}
+}
+
+@media all and (max-width:600px) {
+  .inner {
+    opacity:0;
+  }
 }

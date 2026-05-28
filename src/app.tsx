@@ -6,11 +6,37 @@ const root = createRoot(document.body);
 root.render(<Sterling />);
 function Sterling() {
 
-    const [openDeckField, setOpenDeckField] = useState<boolean>(false)
-    const [deckStage, setDeckStage] = useState();
+    const triggerHelpAutoFormat = () => {
 
-    const addADeck = (topicId: string, front:string, back:string) => {
-        console.log(topicId, front, back)
+    }
+
+    const [addDeckMsg, setAddDeckMsg] = useState<any[]>([false, ""])
+
+    const [openCardField, setOpenCardField] = useState<boolean>(false)
+    const [deckStage, setDeckStage] = useState<string[]>();
+    const [autoFormat, setAutoFormat] = useState<boolean>(true)
+
+    const [cardFront, setCardFront] = useState<string>("")
+    const [cardBack, setCardBack] = useState<string>("")
+
+
+    const addACard = async (deckId: string, front:string, back:string) => {
+
+        
+        const {success} = await (window as any).electronAPI.addCard(deckId, front, back)
+        
+
+        setCardFront("")
+        setCardBack("")
+
+        if(success) {
+            setAddDeckMsg([true, "Card Added"])
+        }
+        else {
+            setAddDeckMsg([false, "Could Not Add Card"])
+        }
+
+
     }
 
 
@@ -18,33 +44,33 @@ function Sterling() {
     const [renameTopicName, setRenameTopicName] = useState<string>("");
 
 
-    const [decksFromTopic, setDecksFromTopic] = useState<any>(null)
+    const [cardsFromDeck, setCardsFromDeck] = useState<any>(null)
 
-    const getDecksFromTopic = async (key: number) => {
-        const {success, data} = await (window as any).electronAPI.getDecksFromTopic(key)
+    const getCardsFromDeck = async (key: number) => {
+        const {success, data} = await (window as any).electronAPI.getCardsFromDeck(key)
         if(success == false) {
             setErrorMsg("There was an error getting the decks from a topic.")
         }
         else {
-            setDecksFromTopic(data)
+            setCardsFromDeck(data)
         }
     }
 
-    const renameATopic = async (key: number, rename: string) => {
-        const {success} = await (window as any).electronAPI.renameTopic(key, rename)
+    const renameADeck = async (key: number, rename: string) => {
+        const {success} = await (window as any).electronAPI.renameDeck(key, rename)
         if(success == false) {
             setErrorMsg("There was an error renaming a topic.")
         }
-        getTopicsFile()
+        getDecksFile()
     }
 
 
-    const deleteATopic = async (key: number) => {
-        const {success} = await (window as any).electronAPI.deleteTopic(key)
+    const deleteADeck = async (key: number) => {
+        const {success} = await (window as any).electronAPI.deleteDeck(key)
         if(success == false) {
             setErrorMsg("There was an error deleting a topic.")
         }
-        getTopicsFile()
+        getDecksFile()
 
     }
 
@@ -77,7 +103,7 @@ function Sterling() {
         else if(success == false && maxTopicError) {
             setErrorMsg("There was an error adding a topic.")
         }
-        getTopicsFile()
+        getDecksFile()
     }
 
     const enterAddTopic = async function (e: any) {
@@ -107,8 +133,8 @@ function Sterling() {
         
     }, [openTopicField])
 
-    const [topicsFile, setTopicsFile] = useState<null>(null);
-    const [noTopics, setNoTopics] = useState(true);
+    const [decksFile, setDecksFile] = useState<null>(null);
+    const [noDecks, setNoDecks] = useState(true);
     const [explorerTopicSelection, setExplorerTopicSelection] = useState<number>()
 
 
@@ -117,33 +143,33 @@ function Sterling() {
     
 
     //Get JSON
-    const getTopicsFile = async () => {
-        const {status, data} = await (window as any).electronAPI.getTopics("src/topics.json");
+    const getDecksFile = async () => {
+        const {status, data} = await (window as any).electronAPI.getDecks("src/topics.json");
         const newData = JSON.parse(data)
         if(newData.status === true) {
-            setNoTopics(false)
-            setTopicsFile(newData)
+            setNoDecks(false)
+            setDecksFile(newData)
             var len = Object.keys(newData).length - 1
             if(len == 1) {
-                setNumberTopics("1 topic")
+                setNumberTopics("1 deck")
             }
             else if(len > 1 && len < 15) {
-                setNumberTopics(`${len.toString()} topics`)
+                setNumberTopics(`${len.toString()} decks`)
             }
             else if(len == 15) {
-                setNumberTopics("15 topics (maximum)")
+                setNumberTopics("15 decks (maximum)")
             }
             
             
         }
         else {
-            setNoTopics(true)
+            setNoDecks(true)
         }
 
     };
 
     useEffect(() => {
-        getTopicsFile();
+        getDecksFile();
     }, []);
 
 
@@ -331,7 +357,7 @@ function Sterling() {
                                 </div>
                             </div>
                             <div className="explorer-option" onClick={()=> {
-                                getTopicsFile()
+                                getDecksFile()
                             }}>
                                 <div className="explorer-option-icon refresh-icon"></div>
                                <div className="explorer-tooltip">
@@ -349,10 +375,10 @@ function Sterling() {
                         </div>
                     </div>
                    
-                    {noTopics ? <div className="explorer-no-topics"><p className="font font-small color-darkgrey font-slim">You have no topics yet.</p></div> : 
+                    {noDecks ? <div className="explorer-no-topics"><p className="font font-small color-darkgrey font-slim">You have no topics yet.</p></div> : 
                     <div className="explorer-topics" onContextMenu={()=> {relieveTopicField(); relieveMenu()}} onClick={()=> {relieveTopicField(); relieveMenu()}}>
                         {/* Topics Go Here */}
-                        {topicsFile != null ? Object.entries(topicsFile).map((i: any, key:number)=> {
+                        {decksFile != null ? Object.entries(decksFile).map((i: any, key:number)=> {
                             if(i[0] !== "status") {
                                 return renameTopicField != key ? <div className="explorer-topic" key={key} onContextMenu={()=> {
                                     //Right Click
@@ -366,19 +392,19 @@ function Sterling() {
                                         setExplorerTopicSelection(0)
                                     }else {
                                         setExplorerTopicSelection(i[0])
-                                        getDecksFromTopic(key)
+                                        getCardsFromDeck(key)
                                     }
                                     }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary-dark)": "unset"}}>
                                     <div className={`${explorerTopicSelection == i[0] ? "explorer-topic-inner-no-hover" : "explorer-topic-inner"}`}>
                                         <div className="combine">
-                                            <p className="font font-small font-slim color-fg">{i[1].topicTitle}</p>
+                                            <p className="font font-small font-slim color-fg">{i[1].deckTitle}</p>
                                         </div>
-                                    {i[1].topicStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>empty</i></p> : <p className="font font-super-small font-slim color-darkgrey"><i>{Object.keys(i[1].decks).length} deck(s)</i></p>}
+                                    {i[1].deckStatus == false ? <p className="font font-super-small font-slim color-darkgrey"><i>empty</i></p> : <p className="font font-super-small font-slim color-darkgrey"><i>{Object.keys(i[1].cards).length} cards(s)</i></p>}
                                     </div>
                                     <div className="explorer-topic-context-menu" style={{display: explorerContextMenuKey == key ? "flex" : "none", left: explorerContextMenuPos[0], top: explorerContextMenuPos[1]}}>
                                         <div className="explorer-topic-context-menu-item" onClick={()=> {
                                             //Delete Function
-                                            deleteATopic(key)
+                                            deleteADeck(key)
 
                                         }}>
                                             <p className="font font-super-small font-slim color-fg">Delete</p>
@@ -402,7 +428,7 @@ function Sterling() {
                                     }
                                     else if(e.key == "Enter") {
                                         //Rename
-                                        renameATopic(renameTopicField, renameTopicName)
+                                        renameADeck(renameTopicField, renameTopicName)
                                         setRenameTopicField(0)
                                         setRenameTopicName("")
                                     }
@@ -414,7 +440,7 @@ function Sterling() {
                     </div>
                     }
                     <input className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
-                    <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setOpenDeckField(false)}}>
+                    <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setOpenCardField(false)}}>
                     </div>
                 </div>
                 
@@ -422,63 +448,114 @@ function Sterling() {
                     
                 </div>
                 <div className="inner" onClick={()=> {relieveTopicField();}}>
-                        {decksFromTopic != null && explorerTopicSelection != 0 ? Object.entries(decksFromTopic).map((i: any, key:number)=> {
-                            if(i[1].topicStatus) {
+                        {cardsFromDeck != null && explorerTopicSelection != 0 ? Object.entries(cardsFromDeck).map((i: any, key:number)=> {
+                            if(i[1].deckStatus) {
+                                if(openCardField && explorerTopicSelection != 0) {
+                                    return(
+                                        <div className="decks-page">
+                                            <div className="vertbine">
+                                                <h1 className="font font-title color-fg font-slim">Add Card to <i><span className="underline">{i[1].deckTitle}</span></i></h1>
+                                                <div className="combine">
+
+                                                    <div className="button" onClick={()=> {setAutoFormat(!autoFormat)}}>
+                                                        <p className="font font-small color-bg font-slim">Auto-Format</p>
+                                                    </div>
+                                                    <p style={{transition: "all 0.25s ease-in-out"}} className="font font-small color-fg font-slim">{autoFormat ? "On" : "Off"}</p>
+                                                    <div className={`${autoFormat ? "green-dot" : "red-dot"}`}></div>
+                                                </div>
+                                                <p onClick={()=> {triggerHelpAutoFormat()}} className="font font-small color-fg font-slim underline">What's this?</p>
+                                            
+                                            </div>
+                                            <div className="downbine">
+                                                <p className="font font-regular color-fg font-slim">Front</p>
+                                                <textarea onChange={(e)=> {setCardFront(e.target.value)}} value={cardFront} className="deck-input font font-small color-fg font-slim" placeholder="Front side.."></textarea>
+                                            </div>
+                                            <div className="downbine">
+                                                <p className="font font-regular color-fg font-slim">Back</p>
+                                                <textarea onChange={(e)=> {setCardBack(e.target.value)}} value={cardBack} className="deck-input font font-small color-fg font-slim" placeholder="Back side.."></textarea>
+                                            </div>
+                    
+                                            
+                                            <div className="combine">
+                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack)}}>
+                                                    <p className="font font-small color-bg font-slim">Add</p>
+                                                </div> 
+                                                <div className="button" onClick={()=> {setOpenCardField(false)}}>
+                                                    <p className="font font-small color-bg font-slim">I'm Done</p>
+                                                </div> 
+                                            </div>
+                                            <p className={`${addDeckMsg[0] ? "color-green":"color-red"} font font-small font-slim`}>{addDeckMsg[1]}</p>
+                                        </div>
+                                    )
+                                }
+                                else {
+
                                 //There is decks in this topic - display decks to user
                                 return (<div className="decks-page">
                                     <div className="vertbine">
-                                        <p className="font font-title color-fg font-slim">{i[1].topicTitle}</p>
-                                        <p className="font font-regular color-fg font-slim">{Object.keys(i[1].decks).length} decks.</p>
+                                        <p className="font font-title color-fg font-slim">{i[1].deckTitle}</p>
+                                        <p className="font font-regular color-fg font-slim">{Object.keys(i[1].cards).length} cards.</p>
                                     </div>
                                     <div className="combine">
                                         <div className="primary-button">
                                             <p className="font font-small color-bg font-slim">Start</p>
                                         </div>
-                                        <div className="button">
+                                        <div className="button" onClick={()=> setOpenCardField(true)}>
                                             <p className="font font-small color-bg font-slim">Add Deck</p>
                                         </div>
                                     </div>
                                 </div>)
+                                }
                             }
                             else {
                                 //There is no decks - prompt user to add decks
-                                if(openDeckField && explorerTopicSelection != 0) {
+                                if(openCardField && explorerTopicSelection != 0) {
                                     return(
                                         <div className="decks-page">
                                             <div className="vertbine">
-                                                <h1 className="font font-title color-fg font-slim">Add Deck</h1>
-                                                    <p className="font font-regular color-fg font-slim">{i[1].topicTitle}</p>
-                                                
+                                                <h1 className="font font-title color-fg font-slim">Add Card to <i><span className="underline">{i[1].deckTitle}</span></i></h1>
+
+                                                <div className="combine">
+
+                                                    <div className="button" onClick={()=> {setAutoFormat(!autoFormat)}}>
+                                                        <p className="font font-small color-bg font-slim">Auto-Format</p>
+                                                    </div>
+                                                    <p style={{transition: "all 0.25s ease-in-out"}} className="font font-small color-fg font-slim">{autoFormat ? "On" : "Off"}</p>
+                                                    <div className={`${autoFormat ? "green-dot" : "red-dot"}`}></div>
+                                                </div>
+                                                <p onClick={()=> {triggerHelpAutoFormat()}} className="font font-small color-fg font-slim underline">What's this?</p>
+                                            
                                             </div>
                                             <div className="downbine">
                                                 <p className="font font-regular color-fg font-slim">Front</p>
-                                                <textarea className="deck-input font font-regular color-fg font-slim"></textarea>
+                                                <textarea onChange={(e)=> {setCardFront(e.target.value)}} value={cardFront} className="deck-input font font-small color-fg font-slim" placeholder="Front side.."></textarea>
                                             </div>
                                             <div className="downbine">
                                                 <p className="font font-regular color-fg font-slim">Back</p>
-                                                <textarea className="deck-input font font-regular color-fg font-slim"></textarea>
+                                                <textarea onChange={(e)=> {setCardBack(e.target.value)}} value={cardBack} className="deck-input font font-small color-fg font-slim" placeholder="Back side.."></textarea>
                                             </div>
                     
                                             
                                             <div className="combine">
-                                                <div className="button">
+                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack)}}>
                                                     <p className="font font-small color-bg font-slim">Add</p>
                                                 </div> 
-                                                <div className="button" onClick={()=> {setOpenDeckField(false)}}>
+                                                <div className="button" onClick={()=> {setOpenCardField(false)}}>
                                                     <p className="font font-small color-bg font-slim">I'm Done</p>
                                                 </div> 
                                             </div>
+                                            <p className={`${addDeckMsg[0] ? "color-green":"color-red"} font font-small font-slim`}>{addDeckMsg[1]}</p>
                                         </div>
                                     )
                                 }
                                 else {
                                     return(<div className="decks-page">
                                         <div className="vertbine">
-                                            <h1 className="font font-title color-fg font-slim">{i[1].topicTitle}</h1>
-                                            <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                                            <h1 className="font font-title color-fg font-slim">{i[1].deckTitle}</h1>
+                                            <p className="font font-regular color-fg font-slim">No cards in this deck.</p>
                                         </div>
-                                        <div className="button" onClick={()=> {setOpenDeckField(true)}}>
-                                            <p className="font font-small color-bg font-slim">Add Deck</p>
+                                        <div className="button" onClick={()=> {setOpenCardField(true)}}>
+                                            <p className="font font-small color-bg font-slim">Add Card</p>
                                         </div>    
                                     </div>
                                     )
@@ -486,7 +563,7 @@ function Sterling() {
 
                               
                             }
-                        }) : <p className="font font-regular color-fg font-slim">Select a topic to view its decks.</p>}
+                        }) : <p className="font font-regular color-fg font-slim">Select a deck to view its cards.</p>}
 
                     
                 </div>
@@ -499,6 +576,7 @@ function Sterling() {
                 <div className="statusbar-item">
                     <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
                 </div>
+                
             </div>
             
         </div>

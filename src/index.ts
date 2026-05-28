@@ -48,7 +48,7 @@ const createWindow = (): void => {
   mainWindow.webContents.openDevTools()
 };
 
-ipcMain.handle("get-topics", async (_event, filePath: string) => {
+ipcMain.handle("get-decks", async (_event, filePath: string) => {
   try {
     const data = await fs.readFile(filePath, 'utf8');
     return { success: true, data };
@@ -60,7 +60,7 @@ ipcMain.handle("get-topics", async (_event, filePath: string) => {
 });
 
 
-ipcMain.handle("delete-topic", async (_event, key:number) => {
+ipcMain.handle("delete-deck", async (_event, key:number) => {
 
   try {
     const testData = await fs.readFile("src/topics.json", 'utf8')
@@ -85,7 +85,7 @@ ipcMain.handle("delete-topic", async (_event, key:number) => {
 })
 
 
-ipcMain.handle("get-decks-from-topic", async (_event, key: number) => {
+ipcMain.handle("get-cards-from-deck", async (_event, key: number) => {
   try {
 
     const testData = await fs.readFile("src/topics.json", "utf8")
@@ -97,7 +97,6 @@ ipcMain.handle("get-decks-from-topic", async (_event, key: number) => {
         newData[i[0]] = i[1]
       }
     })
-    console.log(newData)
 
     return {success:true, data: newData}
   } catch(error:any) {
@@ -105,7 +104,7 @@ ipcMain.handle("get-decks-from-topic", async (_event, key: number) => {
   }
 })
 
-ipcMain.handle("rename-topic", async (_event, key:number, rename:string) => {
+ipcMain.handle("rename-deck", async (_event, key:number, rename:string) => {
   try {
     const testData = await fs.readFile("src/topics.json", "utf8")
   
@@ -134,8 +133,36 @@ ipcMain.handle("rename-topic", async (_event, key:number, rename:string) => {
 })
 
 
+ipcMain.handle("add-card", async (_event, deckId: string, front:string, back: string) => {
+  try {
+    const testData = await fs.readFile("src/topics.json", 'utf8')
+  
+    const JSONDataTemp = JSON.parse(testData)
 
-ipcMain.handle("add-topic", async (_event, topicName: string) => {
+    if(JSONDataTemp[deckId].deckStatus) {
+      console.log("This deck has cards")
+      JSONDataTemp[deckId].cards = [...JSONDataTemp[deckId].cards, [front, back]]
+    }
+    else {
+      console.log("this deck has no cards")
+      JSONDataTemp[deckId].deckStatus = true
+      JSONDataTemp[deckId].cards = [[front, back]]
+      
+    }
+
+    const stringData = JSON.stringify(JSONDataTemp, null, "\t")
+    await fs.writeFile("src/topics.json", stringData)
+
+    return {success:true}
+  }
+  catch(err: any) {
+    return {success:false}
+  }
+
+})
+
+
+ipcMain.handle("add-deck", async (_event, deckName: string) => {
 
 
 
@@ -151,8 +178,8 @@ ipcMain.handle("add-topic", async (_event, topicName: string) => {
     try {
       const JSONData = JSON.parse(testData)
       JSONData[v4()] = {
-          "topicTitle": topicName,
-          "topicStatus": false
+          "deckTitle": deckName,
+          "deckStatus": false
       }
   
       const stringData = JSON.stringify(JSONData, null, "\t")

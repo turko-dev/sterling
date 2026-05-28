@@ -4,21 +4,23 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
 
-
-  getTopics: (filePath: string) => {
-    return ipcRenderer.invoke("get-topics", filePath);
+  getDecks: (filePath: string) => {
+    return ipcRenderer.invoke("get-decks", filePath);
   },
-  addTopic: (topicName: string) => {
-    return ipcRenderer.invoke("add-topic", topicName);
+  addDeck: (deckName: string) => {
+    return ipcRenderer.invoke("add-deck", deckName);
   },
-  deleteTopic: (key: number) => {
-    return ipcRenderer.invoke("delete-topic", key)
+  deleteDeck: (key: number) => {
+    return ipcRenderer.invoke("delete-deck", key)
   },
-  renameTopic: (key: number, rename: string) => {
-    return ipcRenderer.invoke("rename-topic", key, rename)
+  renameDeck: (key: number, rename: string) => {
+    return ipcRenderer.invoke("rename-deck", key, rename)
   },
-  getDecksFromTopic: (key: number) => {
-    return ipcRenderer.invoke("get-decks-from-topic", key)
+  getCardsFromDeck: (key: number) => {
+    return ipcRenderer.invoke("get-cards-from-deck", key)
+  },
+  addCard: (deckId: string, front: string, back: string) => {
+    return ipcRenderer.invoke("add-card", deckId, front, back)
   }
   
 });
