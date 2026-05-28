@@ -56,11 +56,30 @@
   padding:15px 28px;
   border-radius:var(--breakpoint);
   background-color: var(--fg);
-  transition:all 0.25s ease-in-out;
+  display: flex;
+  white-space:nowrap;
+  justify-content: center;
+  align-items: center;
+  transition:background-color 0.1s ease-in-out;
 }
 .button:hover {
   background-color: var(--darkgrey);
   cursor:pointer;
+}
+
+.primary-button {
+  padding:15px 28px;
+  border-radius:var(--breakpoint);
+  background-color: var(--primary);
+  display: flex;
+  white-space:nowrap;
+  justify-content: center;
+  align-items: center;
+  transition:background-color 0.1s ease-in-out;
+}
+.primary-button:hover {
+  background-color: var(--primary-dark);
+  cursor:pointer
 }
 
 .decks-page {
@@ -73,7 +92,24 @@
   flex-direction: column;
   gap:var(--margin);
 }
+.deck-input {
+  width:60%;
+  padding:var(--gap);
+  border-radius:var(--margin);
+  height:100px;
+  overflow:hidden;
 
+
+}
+.downbine {
+  width:100%;
+  height:fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap:var(--margin);
+}
 .color-fg {
   color: var(--fg);
 }

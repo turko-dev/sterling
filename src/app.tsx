@@ -6,6 +6,14 @@ const root = createRoot(document.body);
 root.render(<Sterling />);
 function Sterling() {
 
+    const [openDeckField, setOpenDeckField] = useState<boolean>(false)
+    const [deckStage, setDeckStage] = useState();
+
+    const addADeck = (topicId: string, front:string, back:string) => {
+        console.log(topicId, front, back)
+    }
+
+
     const [renameTopicField, setRenameTopicField] = useState<number>(0);
     const [renameTopicName, setRenameTopicName] = useState<string>("");
 
@@ -406,9 +414,7 @@ function Sterling() {
                     </div>
                     }
                     <input className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
-                    <div className="explorer-remaining" onClick={()=> {
-                        relieveTopicField(); setExplorerTopicSelection(0)}}>
-                        
+                    <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setOpenDeckField(false)}}>
                     </div>
                 </div>
                 
@@ -417,39 +423,68 @@ function Sterling() {
                 </div>
                 <div className="inner" onClick={()=> {relieveTopicField();}}>
                         {decksFromTopic != null && explorerTopicSelection != 0 ? Object.entries(decksFromTopic).map((i: any, key:number)=> {
-
                             if(i[1].topicStatus) {
                                 //There is decks in this topic - display decks to user
                                 return (<div className="decks-page">
-
                                     <div className="vertbine">
                                         <p className="font font-title color-fg font-slim">{i[1].topicTitle}</p>
                                         <p className="font font-regular color-fg font-slim">{Object.keys(i[1].decks).length} decks.</p>
-                                        <div className="button">
+                                    </div>
+                                    <div className="combine">
+                                        <div className="primary-button">
                                             <p className="font font-small color-bg font-slim">Start</p>
                                         </div>
+                                        <div className="button">
+                                            <p className="font font-small color-bg font-slim">Add Deck</p>
+                                        </div>
                                     </div>
-                                    
-                                    <div className="button">
-                                        <p className="font font-small color-bg font-slim">Add Deck</p>
-                                    </div>
-
                                 </div>)
                             }
                             else {
-                                
                                 //There is no decks - prompt user to add decks
-
-                                return(<div className="decks-page">
-                                    <div className="vertbine">
-                                        <h1 className="font font-title color-fg font-slim">{i[1].topicTitle}</h1>
-                                        <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                                if(openDeckField && explorerTopicSelection != 0) {
+                                    return(
+                                        <div className="decks-page">
+                                            <div className="vertbine">
+                                                <h1 className="font font-title color-fg font-slim">Add Deck</h1>
+                                                    <p className="font font-regular color-fg font-slim">{i[1].topicTitle}</p>
+                                                
+                                            </div>
+                                            <div className="downbine">
+                                                <p className="font font-regular color-fg font-slim">Front</p>
+                                                <textarea className="deck-input font font-regular color-fg font-slim"></textarea>
+                                            </div>
+                                            <div className="downbine">
+                                                <p className="font font-regular color-fg font-slim">Back</p>
+                                                <textarea className="deck-input font font-regular color-fg font-slim"></textarea>
+                                            </div>
+                    
+                                            
+                                            <div className="combine">
+                                                <div className="button">
+                                                    <p className="font font-small color-bg font-slim">Add</p>
+                                                </div> 
+                                                <div className="button" onClick={()=> {setOpenDeckField(false)}}>
+                                                    <p className="font font-small color-bg font-slim">I'm Done</p>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                                else {
+                                    return(<div className="decks-page">
+                                        <div className="vertbine">
+                                            <h1 className="font font-title color-fg font-slim">{i[1].topicTitle}</h1>
+                                            <p className="font font-regular color-fg font-slim">No decks in this topic.</p>
+                                        </div>
+                                        <div className="button" onClick={()=> {setOpenDeckField(true)}}>
+                                            <p className="font font-small color-bg font-slim">Add Deck</p>
+                                        </div>    
                                     </div>
-                                    <div className="button">
-                                        <p className="font font-small color-bg font-slim">Add Deck</p>
-                                    </div>
-                                </div>)
+                                    )
+                                }
 
+                              
                             }
                         }) : <p className="font font-regular color-fg font-slim">Select a topic to view its decks.</p>}
 
