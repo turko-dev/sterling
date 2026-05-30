@@ -16,6 +16,12 @@
 	},
 	"82ed4bbc-60ce-4054-bf8d-d5c9d516ac89": {
 		"deckTitle": "jn hvgcfg",
-		"deckStatus": false
+		"deckStatus": true,
+		"cards": [
+			[
+				"something",
+				"something else"
+			]
+		]
 	}
 }

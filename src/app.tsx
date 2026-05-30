@@ -503,7 +503,7 @@ function Sterling() {
 
                                             <p className="font font-regular color-fg font-slim">{i[1]}</p>
                                             </div>
-                                        <p className="font font-small color-fg font-slim">Delete</p>
+                                        <p className="font font-small color-fg font-slim">Delete (Not Working)</p>
                                     </div>
                                 </div>
                             }) : <p className="font font-regular color-fg font-slim">Not Allowed</p>}
