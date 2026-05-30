@@ -25,7 +25,56 @@ function Sterling() {
     const [explorerKey, setExplorerKey] = useState<number>(0)
     const addACard = async (deckId: string, front:string, back:string) => {
 
-        
+        if(autoFormat) {
+            
+            let tempFront = ""
+            let tempBack = ""
+            //Capital letter check
+
+            //normal whitespace check
+
+            //period or question mark
+
+            let frontSplit = front.split(" ")
+            let backSplit = back.split(" ")
+
+            function fun(a: string[], e: string) {
+                if (!a.includes(e)) return a
+                return a.filter((item) => item !== e)
+            }
+            frontSplit = fun(frontSplit, '')
+            backSplit = fun(backSplit, '')
+
+            for(let a = 0; a < frontSplit.length; a++) {
+                tempFront += `${frontSplit[a]} `
+            }
+            for(let b = 0; b < backSplit.length; b++) {
+                tempBack += `${backSplit[b]} `
+            }
+            
+            let capFront = tempFront.charAt(0).toUpperCase()
+            let slicedFront = tempFront.slice(1, tempFront.length - 1)
+            tempFront = capFront + slicedFront
+
+            let capBack = tempBack.charAt(0).toUpperCase()
+            let slicedBack = tempBack.slice(1, tempBack.length - 1)
+            tempBack = capBack + slicedBack
+
+
+            if(!tempFront.endsWith('.')) {
+                tempFront += "."
+            }
+            if(!tempBack.endsWith('.')) {
+                tempBack += "."
+            }
+            
+
+
+            front = tempFront
+            back = tempBack
+
+        }  
+
         const {success} = await (window as any).electronAPI.addCard(deckId, front, back)
         
 
