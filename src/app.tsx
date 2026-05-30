@@ -64,6 +64,8 @@ function Sterling() {
 
     }
 
+
+
     const getCardsFromDeck = async (key: number) => {
         const {success, data} = await (window as any).electronAPI.getCardsFromDeck(key)
         if(success == false) {
@@ -197,6 +199,11 @@ function Sterling() {
         getDecksFile();
     }, []);
 
+    useEffect(()=> {
+        if(explorerTopicSelection != 0) {
+            console.log(cardsFromDeck[explorerTopicSelection].cards)
+        }
+    }, [modifyDeckWindow])
 
 
 
@@ -482,6 +489,24 @@ function Sterling() {
                             <p className="font font-slim color-fg font-small">Modify Deck</p>
 
                             <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setModifyDeckWindow(false)}}>x</p>
+                        </div>
+                        <div className="free-window-content">
+                            {modifyDeckWindow ? cardsFromDeck[explorerTopicSelection].cards.map((i: any, key: number) => {
+                                return <div className="free-window-item">
+                                    <div className="free-window-item-inner">
+                                            <div className="vertbine-baseline w25">
+                                            <p className="font font-small color-fg font-slim">Front</p>
+                                            <p className="font font-regular color-fg font-slim">{i[0]}</p>
+                                            </div>
+                                            <div className="vertbine-baseline w25">
+                                            <p className="font font-small color-fg font-slim">Back</p>
+
+                                            <p className="font font-regular color-fg font-slim">{i[1]}</p>
+                                            </div>
+                                        <p className="font font-small color-fg font-slim">Delete</p>
+                                    </div>
+                                </div>
+                            }) : <p className="font font-regular color-fg font-slim">Not Allowed</p>}
                         </div>
                     </div>
                 </div>
