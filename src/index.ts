@@ -18,8 +18,8 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     height: 1400,
     width: 800,
-    minHeight:350,
-    minWidth:200,
+    minHeight:500,
+    minWidth:400,
     backgroundColor: 'whitesmoke',
     titleBarStyle: 'hidden',
     titleBarOverlay: {
@@ -73,6 +73,9 @@ ipcMain.handle("delete-deck", async (_event, key:number) => {
         newData[i[0]] = i[1]
       }
     })
+    if(Object.keys(newData).length == 1) {
+      newData.status = false
+    }
 
     const stringData = JSON.stringify(newData, null, "\t")
     await fs.writeFile("src/topics.json", stringData)
@@ -104,26 +107,6 @@ ipcMain.handle("get-cards-from-deck", async (_event, key: number) => {
   }
 })
 
-ipcMain.handle("get-cards-from-id", async (_event, id: string) => {
-  try {
-    const testData = await fs.readFile("src/topics.json", "utf8")
-    const JSONData = JSON.parse(testData)
-
-    let newData: any = {}
-
-    Object.entries(JSONData).map((i: any, k: number) => {
-      if(i == id) {
-        newData[i[0]] = i[1]
-        console.log(i)
-        console.log(id)
-      }
-    })
-    return {success:true, data: newData}
-    
-  } catch(error: any) {
-    return {success: false, data: null}
-  }
-})
 
 ipcMain.handle("rename-deck", async (_event, key:number, rename:string) => {
   try {
@@ -153,6 +136,26 @@ ipcMain.handle("rename-deck", async (_event, key:number, rename:string) => {
 
 })
 
+ipcMain.handle("delete-card", async (_event, deckId:string, cardKey:number) => {
+  try {
+    //Code
+    const testData = await fs.readFile("src/topics.json", "utf8")
+    const JSONDataTemp = JSON.parse(testData)
+    let newData = JSONDataTemp[deckId].cards
+    newData.splice(cardKey, 1)
+    if(newData.length == 0) {
+      JSONDataTemp[deckId].deckStatus = false
+    }
+    JSONDataTemp[deckId].cards = newData
+    const stringData = JSON.stringify(JSONDataTemp)
+    await fs.writeFile("src/topics.json", stringData)
+    return {success:true}
+  } catch(err: any) {
+    //Fail
+    return {success:false}
+  }
+})
+
 
 ipcMain.handle("add-card", async (_event, deckId: string, front:string, back: string) => {
   try {
@@ -161,11 +164,9 @@ ipcMain.handle("add-card", async (_event, deckId: string, front:string, back: st
     const JSONDataTemp = JSON.parse(testData)
 
     if(JSONDataTemp[deckId].deckStatus) {
-      console.log("This deck has cards")
       JSONDataTemp[deckId].cards = [...JSONDataTemp[deckId].cards, [front, back]]
     }
     else {
-      console.log("this deck has no cards")
       JSONDataTemp[deckId].deckStatus = true
       JSONDataTemp[deckId].cards = [[front, back]]
       
@@ -202,6 +203,7 @@ ipcMain.handle("add-deck", async (_event, deckName: string) => {
           "deckTitle": deckName,
           "deckStatus": false
       }
+      JSONData.status = true
   
       const stringData = JSON.stringify(JSONData, null, "\t")
       await fs.writeFile("src/topics.json", stringData)

@@ -61,10 +61,10 @@ function Sterling() {
             tempBack = capBack + slicedBack
 
 
-            if(!tempFront.endsWith('.')) {
+            if(!tempFront.endsWith('.') || !tempFront.endsWith('?')) {
                 tempFront += "."
             }
-            if(!tempBack.endsWith('.')) {
+            if(!tempBack.endsWith('.') || !tempBack.endsWith('?')) {
                 tempBack += "."
             }
             
@@ -99,21 +99,6 @@ function Sterling() {
 
 
     const [cardsFromDeck, setCardsFromDeck] = useState<any>(null)
-
-    const getCardsFromId = async (id: string) => {
-        if(id != "0") {
-            const {success, data} = await (window as any).electronAPI.getCardsFromId(id)
-            if(success == false) {
-                setErrorMsg("There was an error getting the cards from a deck.")
-            }
-            else {
-                setCardsFromDeck(data)
-            }
-        }
-
-    }
-
-
 
     const getCardsFromDeck = async (key: number) => {
         const {success, data} = await (window as any).electronAPI.getCardsFromDeck(key)
@@ -163,6 +148,27 @@ function Sterling() {
         setOpenTopicField(false)
         setNewTopicName("")
     }
+
+    const deleteACard = async (deckId: string, cardKey: number) => {
+        const {success} = await (window as any).electronAPI.deleteCard(deckId, cardKey)
+        if(success) {
+            getDecksFile()
+            //Success
+            getCardsFromDeck(explorerKey)
+
+           
+        }
+        else {
+            setErrorMsg("Could not delete card")
+            //Failed
+        }
+    }
+    useEffect(()=> {
+
+        if(explorerTopicSelection !== 0) {
+            setModifyDeckWindow(false)
+        }
+    }, [cardsFromDeck])
 
     
     const addADeck = async (topicName: string) => {
@@ -248,11 +254,6 @@ function Sterling() {
         getDecksFile();
     }, []);
 
-    useEffect(()=> {
-        if(explorerTopicSelection != 0) {
-            console.log(cardsFromDeck[explorerTopicSelection].cards)
-        }
-    }, [modifyDeckWindow])
 
 
 
@@ -455,8 +456,9 @@ function Sterling() {
                             </div>
                         </div>
                     </div>
+                    <input className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
                    
-                    {noDecks ? <div className="explorer-no-topics"><p className="font font-small color-darkgrey font-slim">You have no topics yet.</p></div> : 
+                    {noDecks ? <div className="explorer-no-topics" onClick={()=> {relieveTopicField(); relieveMenu(); setExplorerTopicSelection(0); setOpenCardField(false)}}><p className="font font-small color-darkgrey font-slim">You have no topics yet.</p></div> : 
                     <div className="explorer-topics" onContextMenu={()=> {relieveTopicField(); relieveMenu()}} onClick={()=> {relieveTopicField(); relieveMenu()}}>
                         {/* Topics Go Here */}
                         {decksFile != null ? Object.entries(decksFile).map((i: any, key:number)=> {
@@ -524,7 +526,6 @@ function Sterling() {
                         }) : ""}
                     </div>
                     }
-                    <input className="explorer-topic-field font font-small font-slim color-darkgrey" onChange={e => setNewTopicName(e.target.value)} value={newTopicName} id="focus" style={{display: openTopicField ? "block" : "none"}}/>
                     <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setOpenCardField(false)}}>
                     </div>
                 </div>
@@ -552,9 +553,10 @@ function Sterling() {
 
                                             <p className="font font-regular color-fg font-slim">{i[1]}</p>
                                             </div>
-                                        <p className="font font-small color-fg font-slim">Delete (Not Working)</p>
+                                        <p onClick={()=> {deleteACard(explorerTopicSelection?.toString(), key)}} className="font font-small color-fg font-slim cursor">Delete (Not Working)</p>
                                     </div>
                                 </div>
+                                
                             }) : <p className="font font-regular color-fg font-slim">Not Allowed</p>}
                         </div>
                     </div>
@@ -592,7 +594,7 @@ function Sterling() {
                                                 <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack);}}>
                                                     <p className="font font-small color-bg font-slim">Add</p>
                                                 </div> 
-                                                <div className="button" onClick={()=> {setOpenCardField(false)}}>
+                                                <div className="button" onClick={()=> {setOpenCardField(false); setAddDeckMsg([false, ""])}}>
                                                     <p className="font font-small color-bg font-slim">I'm Done</p>
                                                 </div> 
                                             </div>

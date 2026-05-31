@@ -22,8 +22,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addCard: (deckId: string, front: string, back: string) => {
     return ipcRenderer.invoke("add-card", deckId, front, back)
   },
-  getCardsFromId: (id: string) => {
-    return ipcRenderer.invoke("get-cards-from-id", id)
+  deleteCard: (deckId: string, cardKey: number) => {
+    return ipcRenderer.invoke("delete-card", deckId, cardKey)
   }
+
   
 });

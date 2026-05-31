@@ -40,6 +40,7 @@
   flex-direction: column;
   gap:var(--gap);
 }
+
 .combine {
   display: flex;
   justify-content: baseline;
@@ -76,6 +77,9 @@
 }
 .button:hover {
   background-color: var(--darkgrey);
+  cursor:pointer;
+}
+.cursor {
   cursor:pointer;
 }
 
@@ -576,7 +580,7 @@ body {
 
 .explorer-no-topics {
   width:100%;
-  height:100%;
+  height:100px;
   display:flex;
   justify-content:center;
   align-items:center;
