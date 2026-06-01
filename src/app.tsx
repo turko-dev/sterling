@@ -10,6 +10,33 @@ function Sterling() {
 
     const [modifyDeckWindow, setModifyDeckWindow] = useState<boolean>(false);
 
+    const [defaultAutoFormat, toggleDefaultAutoFormat] = useState<boolean>(false)
+
+    const getDefaultAutoFormat = async () => {
+        const {success, data} = await (window as any).electronAPI.getDefaultAutoFormat()
+        
+        if(success && data.autoformat) {
+            toggleDefaultAutoFormat(true)
+            setAutoFormat(true)
+        }
+        else if(success && !data.autoformat) {
+            toggleDefaultAutoFormat(false)
+            setAutoFormat(false)
+        }
+        else {
+            setErrorMsg("There was an error getting the default autoformat value")
+        }
+    }
+    const setDefaultAutoFormat = async (bool: boolean) => {
+        const {success} = await (window as any).electronAPI.setDefaultAutoFormat(bool)
+        if(success) {
+            getDefaultAutoFormat()
+        }
+        else {
+            setErrorMsg("There was an error setting the default autoformat value")
+        }
+    }
+
     const triggerHelpAutoFormat = () => {
 
     }
@@ -290,10 +317,15 @@ function Sterling() {
 
     useEffect(() => {
         getTheme()
+        getDefaultAutoFormat();
         getDecksFile();
     }, []);
 
 
+    useEffect(()=> {
+        console.log(defaultAutoFormat)
+
+    })
 
 
     //Menu Handling
@@ -399,6 +431,12 @@ function Sterling() {
                         </div>
                         <div className="titlebar-menu-item">
                             <p className="font font-small color-darkgrey font-slim">Search Pre-Made Decks</p>
+                            <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
+
+                        </div>
+                        <div className="titlebar-menu-item-separator"></div>
+                        <div className="titlebar-menu-item" onClick={()=> {setDefaultAutoFormat(!defaultAutoFormat)}}>
+                            <p className="font font-small color-darkgrey font-slim">{defaultAutoFormat ? "Disable" : "Enable"} Default Autoformat</p>
                             <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
 
                         </div>
@@ -739,7 +777,7 @@ function Sterling() {
                     <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
                 </div>
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{explorerKey}</p>
+                    <p className="font font-super-small color-bg font-slim"></p>
                 </div>
                 
             </div>

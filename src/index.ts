@@ -61,6 +61,31 @@ ipcMain.handle("get-theme", async (_event) => {
   }
 })
 
+ipcMain.handle("get-default-autoformat", async (_event) => {
+  try {
+    const data = await fs.readFile("src/autoformat.json", "utf8")
+    const JSONData = JSON.parse(data)
+
+
+
+    return {success:true, data: JSONData}
+  } catch(err: any) {
+    return {success:false, data: null}
+  }
+})
+ipcMain.handle("set-default-autoformat", async (_event, bool: boolean) => {
+  try {
+
+    const testData = {
+      "autoformat": bool
+    }
+
+    await fs.writeFile("src/autoformat.json", JSON.stringify(testData))
+    return {success:true}
+  } catch(err: any) {
+    return {success:false}
+  }
+})
 ipcMain.handle("set-theme", async (_event, themeName: string) => {
   try {
     const testData = {

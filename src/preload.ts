@@ -7,6 +7,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getTheme: () => {
     return ipcRenderer.invoke("get-theme")
   },
+  getDefaultAutoFormat: () => {
+    return ipcRenderer.invoke("get-default-autoformat")
+  },
+  setDefaultAutoFormat: (bool: boolean) => {
+    return ipcRenderer.invoke("set-default-autoformat", bool)
+  },
   setTheme: (themeName: string) => {
     return ipcRenderer.invoke("set-theme", themeName)
   },
