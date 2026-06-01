@@ -7,12 +7,13 @@
 }
 
 :root {
-  --bg:rgb(253, 253, 253);
+  --bg:#fdfdfd;
   --margin:8px;
   --gap:20px;
   --primary: #e76b31;
   --primary-dark: #f18655;
-
+  --test-color: #b15fb1;
+  
   --primary-accent: #e97946;
   --grey: #d1d1d1;
   --grey-accent: #c1c1c1;
@@ -182,11 +183,18 @@
   padding:var(--gap);
   border-radius:var(--margin);
   height:100px;
+  outline:none;
   overflow:hidden;
-  resize:none
-
+  resize:none;
+  border:1px solid rgba(20, 20, 20, 0.075);
 
 }
+.deck-input:focus {
+  border:none;
+  border:1px solid var(--primary);
+  outline:1px solid var(--primary);
+}
+
 .red-dot {
   width:5px;
   height:5px;
@@ -419,6 +427,7 @@ body {
   background-color:var(--grey);
   outline:1px solid var(--darkgrey);
 }
+
 .explorer-topic-context-menu {
   position:fixed;
   border:1px solid var(--grey);
@@ -472,6 +481,8 @@ body {
 .explorer-topic-inner {
   width:100%;
   padding:var(--margin);
+  border:1px solid rgba(128, 128, 128, 0);
+
   display:flex;
   justify-content:space-between;
   background-color:none;
@@ -484,7 +495,9 @@ body {
 }
 .explorer-topic-inner-no-hover {
   width:100%;
-  outline:1px solid grey;
+  border:1px solid grey;
+  
+  z-index:100;
   padding:var(--margin);
   display:flex;
   justify-content:space-between;

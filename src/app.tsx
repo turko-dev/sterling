@@ -7,6 +7,7 @@ root.render(<Sterling />);
 function Sterling() {
 
 
+
     const [modifyDeckWindow, setModifyDeckWindow] = useState<boolean>(false);
 
     const triggerHelpAutoFormat = () => {
@@ -250,7 +251,45 @@ function Sterling() {
 
     };
 
+    const setTheme = async (themeName: string) => {
+        const {success} = await (window as any).electronAPI.setTheme(themeName)
+        if(success) {
+            getTheme()
+        }
+        else {
+            setErrorMsg("There was an error setting this theme")
+        }
+    }
+
+
+    const getTheme = async () => {
+        const {success, data} = await (window as any).electronAPI.getTheme()
+        
+        if(data.theme == "default") {
+            document.documentElement.style.setProperty("--primary", "#e76b31") 
+            document.documentElement.style.setProperty("--primary-dark", "#f18655")
+            document.documentElement.style.setProperty("--primary-accent", "#e97946")
+            document.documentElement.style.setProperty("--bg", "#fdfdfd") 
+            document.documentElement.style.setProperty("--fg", "#3d3d3d")
+            document.documentElement.style.setProperty("--darkgrey", "#646464")
+            document.documentElement.style.setProperty("--lightgrey", "#bebebe")
+            document.documentElement.style.setProperty("--grey-accent", "#c1c1c1")
+        }
+        else if(data.theme == "highgarden") {
+            document.documentElement.style.setProperty("--primary", "purple")
+            document.documentElement.style.setProperty("--primary-dark", "#c978c9")
+            document.documentElement.style.setProperty("--primary-accent", "#b15fb1")
+            document.documentElement.style.setProperty("--bg", "#ffffff")
+            document.documentElement.style.setProperty("--fg", "#2b2929")
+            document.documentElement.style.setProperty("--darkgrey", "#333333")
+            document.documentElement.style.setProperty("--lightgrey", "#6e6e6e")
+            document.documentElement.style.setProperty("--grey-accent", "#e3e3e6")
+        }
+        
+    }
+
     useEffect(() => {
+        getTheme()
         getDecksFile();
     }, []);
 
@@ -277,7 +316,6 @@ function Sterling() {
     }
 
     window.addEventListener("mousemove", mouseMove)
-                                    
 
     //Explorer Resizing Handling
     const [explorerWidth, setExplorerWidth] = useState(300);
@@ -331,7 +369,7 @@ function Sterling() {
     return(
         <div className="page">
             <meta httpEquiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"  />
-            <div className="titlebar" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setExplorerContextMenuKey(0)}}>
+            <div className="titlebar" onClick={()=> {setExplorerContextMenuKey(0)}}>
                 <p className="font font-small color-primary font-slim">Sterling</p>
                 <div className="titlebar-item" onMouseEnter={()=> {
                     if(menuHover == true) {
@@ -343,24 +381,24 @@ function Sterling() {
                     <p className="font font-small color-darkgrey font-slim">Decks</p>
                     
                     <div className="titlebar-menu" style={{display : decksMenu ? 'flex' : 'none'}}>
-                        <div className="titlebar-menu-item">
+                        <div className="titlebar-menu-item" onClick={()=> {setOpenTopicField(true)}}>
                             <p className="font font-small color-darkgrey font-slim">New Deck</p>
                             <p className="font font-small color-lightgrey font-slim">Ctrl + D</p>
 
                         </div>
-                        <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">New Topic</p>
+                        <div className="titlebar-menu-item" style={{display: explorerKey != 0 ? "flex": "none"}} onClick={()=> {setOpenCardField(true)}}>
+                            <p className="font font-small color-darkgrey font-slim">New Card</p>
                             <p className="font font-small color-lightgrey font-slim">Ctrl + T</p>
 
                         </div>
                         <div className="titlebar-menu-item-separator"></div>
                         <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Open Deck</p>
+                            <p className="font font-small color-darkgrey font-slim">Load Deck</p>
                             <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
 
                         </div>
                         <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Open Topic</p>
+                            <p className="font font-small color-darkgrey font-slim">Search Pre-Made Decks</p>
                             <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
 
                         </div>
@@ -381,11 +419,12 @@ function Sterling() {
                             <p className="font font-small color-darkgrey font-slim">{explorerMenu ? 'Hide' : 'Show'} Explorer</p>
 
                         </div>
-                        <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Menu Item 1</p>
+                        <div className="titlebar-menu-item-separator"></div>
+                        <div className="titlebar-menu-item" onClick={()=> {setTheme("default")}}>
+                            <p className="font font-small color-darkgrey font-slim">Default Theme</p>
                         </div>
-                        <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Menu Item 1</p>
+                        <div className="titlebar-menu-item" onClick={()=> {setTheme("highgarden")}}>
+                            <p className="font font-small color-darkgrey font-slim">Highgarden Theme</p>
                         </div>
                     </div>
 
@@ -422,10 +461,10 @@ function Sterling() {
                         <p onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0)}} className="font font-super-small color-fg font-bold">EXPLORER</p>
                         
                         <div className="explorer-options">
-                            <div className="explorer-option">
+                            <div className="explorer-option" onClick={()=> setOpenCardField(true)} style={{display: explorerKey != 0 ? "flex": "none"}}>
                                 <div className="explorer-option-icon add-deck-icon"></div>
                                 <div className="explorer-tooltip">
-                                    <p className="font font-super-small color-fg font-slim">Add Deck</p>
+                                    <p className="font font-super-small color-fg font-slim">Add Card</p>
                                 </div>
                             </div>
                             <div className="explorer-option" onClick={()=> {
@@ -435,7 +474,7 @@ function Sterling() {
                                 }}>
                                 <div className="explorer-option-icon add-topic-icon"></div>
                                 <div className="explorer-tooltip">
-                                    <p className="font font-super-small color-fg font-slim">Add Topic</p>
+                                    <p className="font font-super-small color-fg font-slim">Add Deck</p>
                                 </div>
                             </div>
                             <div className="explorer-option" onClick={()=> {
@@ -481,7 +520,7 @@ function Sterling() {
                                         setExplorerKey(key)
 
                                     }
-                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary-dark)": "unset"}}>
+                                    }} style={{backgroundColor: i[0] == explorerTopicSelection ? "var(--primary-dark)": "var(--grey-accent)"}}>
                                     <div className={`${explorerTopicSelection == i[0] ? "explorer-topic-inner-no-hover" : "explorer-topic-inner"}`}>
                                         <div className="combine">
                                             <p className="font font-small font-slim color-fg">{i[1].deckTitle}</p>

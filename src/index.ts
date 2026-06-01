@@ -24,7 +24,7 @@ const createWindow = (): void => {
     titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#d1d1d1',
-      symbolColor: '#e76b31',
+      symbolColor: '#494949',
       height:40,
       
     },
@@ -48,6 +48,31 @@ const createWindow = (): void => {
   mainWindow.webContents.openDevTools()
 };
 
+
+ipcMain.handle("get-theme", async (_event) => {
+  try {
+    const data = await fs.readFile("src/theme.json", "utf8")
+    const JSONData = JSON.parse(data)
+
+    return {success:true, data: JSONData}
+  }
+  catch (err: any) {
+    return {success:false}
+  }
+})
+
+ipcMain.handle("set-theme", async (_event, themeName: string) => {
+  try {
+    const testData = {
+      "theme": themeName
+    }
+    const data = JSON.stringify(testData)
+    await fs.writeFile("src/theme.json", data)
+    return {success:true}
+  } catch(err: any) {
+    return {success:false}
+  }
+})
 ipcMain.handle("get-decks", async (_event, filePath: string) => {
   try {
     const data = await fs.readFile(filePath, 'utf8');

@@ -4,6 +4,12 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
 
+  getTheme: () => {
+    return ipcRenderer.invoke("get-theme")
+  },
+  setTheme: (themeName: string) => {
+    return ipcRenderer.invoke("set-theme", themeName)
+  },
   getDecks: (filePath: string) => {
     return ipcRenderer.invoke("get-decks", filePath);
   },
