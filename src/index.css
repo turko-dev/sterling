@@ -314,7 +314,6 @@ body {
   align-items:baseline;
   flex-direction:column;
   padding:var(--margin);
-  z-index:100;
 }
 .titlebar-menu-item {
   width:100%;
@@ -555,6 +554,7 @@ body {
   padding:4px 8px;
   app-region: no-drag;
   user-select:none;
+  z-index:110;
   justify-content: baseline;
   align-items: baseline;
 

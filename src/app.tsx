@@ -156,6 +156,13 @@ function Sterling() {
         getDecksFile()
 
     }
+    useEffect(()=> {
+        if(explorerTopicSelection !== 0) {
+            if(cardsFromDeck[explorerTopicSelection].cards?.length == 0) {
+                setModifyDeckWindow(false)
+            }
+        }
+    }, [cardsFromDeck])
 
 
     const [openTopicField, setOpenTopicField] = useState<boolean>(false)
@@ -189,16 +196,11 @@ function Sterling() {
             setErrorMsg("Could not delete card")
             //Failed
         }
-    }
-    useEffect(()=> {
-
         if(explorerTopicSelection !== 0) {
             if(cardsFromDeck[explorerTopicSelection].cards?.length == 0) {
                 setModifyDeckWindow(false)
-            }
-        }
-    }, [cardsFromDeck])
-
+        }}
+    }
     
     const addADeck = async (topicName: string) => {
         const {success, maxTopicError} = await (window as any).electronAPI.addDeck(topicName)
@@ -322,11 +324,6 @@ function Sterling() {
         getDecksFile();
     }, []);
 
-
-    useEffect(()=> {
-        console.log(defaultAutoFormat)
-
-    })
 
 
     //Menu Handling
