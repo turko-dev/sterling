@@ -630,7 +630,7 @@ function Sterling() {
 
                                             <p className="font font-regular color-fg font-slim">{i[1]}</p>
                                             </div>
-                                        <p onClick={()=> {deleteACard(explorerTopicSelection?.toString(), key)}} className="font font-small color-fg font-slim cursor">Delete (Not Working)</p>
+                                        <p onClick={()=> {deleteACard(explorerTopicSelection?.toString(), key)}} className="font font-small color-fg font-slim cursor">Delete</p>
                                     </div>
                                 </div>
                                 
