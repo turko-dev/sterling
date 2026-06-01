@@ -183,7 +183,6 @@ function Sterling() {
             getDecksFile()
             //Success
             getCardsFromDeck(explorerKey)
-
            
         }
         else {
@@ -194,7 +193,9 @@ function Sterling() {
     useEffect(()=> {
 
         if(explorerTopicSelection !== 0) {
-            setModifyDeckWindow(false)
+            if(cardsFromDeck[explorerTopicSelection].cards?.length == 0) {
+                setModifyDeckWindow(false)
+            }
         }
     }, [cardsFromDeck])
 
