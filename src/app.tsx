@@ -613,7 +613,7 @@ function Sterling() {
                     <div className="free-window-inner-full">
                         <div className="free-window-header-full">
                             <p className="font font-slim color-fg font-small">Sterling</p>
-
+                            
                             <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setOpenGame(false)}}>x</p>
                         </div>
                     </div>
