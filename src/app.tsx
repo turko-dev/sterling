@@ -612,6 +612,9 @@ function Sterling() {
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
+
+                
+
                 <div className="free-window-full" style={{display: openGame ? "flex" : "none"}}>
                     <div className="free-window-inner-full">
                         <div className="free-window-header-full">
