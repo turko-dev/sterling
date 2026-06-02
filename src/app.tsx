@@ -6,6 +6,7 @@ const root = createRoot(document.body);
 root.render(<Sterling />);
 function Sterling() {
 
+    const [openGame, setOpenGame] = useState<boolean>(false)
 
 
     const [modifyDeckWindow, setModifyDeckWindow] = useState<boolean>(false);
@@ -608,6 +609,15 @@ function Sterling() {
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
+                <div className="free-window-full" style={{display: openGame ? "flex" : "none"}}>
+                    <div className="free-window-inner-full">
+                        <div className="free-window-header-full">
+                            <p className="font font-slim color-fg font-small">Sterling</p>
+
+                            <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setOpenGame(false)}}>x</p>
+                        </div>
+                    </div>
+                </div>
                 <div className="free-window" style={{display: modifyDeckWindow ? "flex":"none"}}>
                     <div className="free-window-inner">
                         <div className="free-window-header">
@@ -686,7 +696,7 @@ function Sterling() {
                                         <p className="font font-regular color-fg font-slim">{Object.keys(i[1].cards).length} cards.</p>
                                     </div>
                                     <div className="combine">
-                                        <div className="primary-button">
+                                        <div className="primary-button" onClick={()=> {setOpenGame(true)}}>
                                             <p className="font font-small color-bg font-slim">Start</p>
                                         </div>
                                         <div className="button" onClick={()=> setOpenCardField(true)}>
