@@ -45,7 +45,11 @@ function Sterling() {
     const [addDeckMsg, setAddDeckMsg] = useState<any[]>([false, ""])
 
     const [openCardField, setOpenCardField] = useState<boolean>(false)
-    const [deckStage, setDeckStage] = useState<string[]>();
+
+    const [deckStage, setDeckStage] = useState<number>(0);
+    const progressDeck = () => {
+        setDeckStage(deckStage + 1)
+    }
     const [autoFormat, setAutoFormat] = useState<boolean>(true)
 
     const [cardFront, setCardFront] = useState<string>("")
@@ -605,7 +609,6 @@ function Sterling() {
                     <div className="explorer-remaining" onClick={()=> {relieveTopicField(); setExplorerTopicSelection(0); setOpenCardField(false)}}>
                     </div>
                 </div>
-                
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
@@ -613,8 +616,21 @@ function Sterling() {
                     <div className="free-window-inner-full">
                         <div className="free-window-header-full">
                             <p className="font font-slim color-fg font-small">Sterling</p>
-                            
-                            <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setOpenGame(false)}}>x</p>
+
+                            <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setOpenGame(false); setDeckStage(0)}}>x</p>
+                        </div>
+                        <div className="free-window-content-full">
+                            {openGame ? cardsFromDeck[explorerTopicSelection].cards.map((i: any, key: number) => {
+                                
+
+                                if(key == deckStage) {
+                                    return <p onClick={()=> progressDeck()}>{i[0]} - {i[1]} {key}</p>
+                                }
+                                else if(cardsFromDeck[explorerTopicSelection].cards.length == deckStage) {
+                                    return <p>Something</p>
+                                }
+                            }) : "Not Allowed"}
+
                         </div>
                     </div>
                 </div>

@@ -130,12 +130,13 @@
   flex-direction: column;
   background-color: #3d3d3d3f;
 }
+
 .free-window-inner-full {
   width:100%;
   height:calc(100% - 40px);
   background-color: white;
   display: flex;
-  justify-content: end;
+  justify-content: baseline;
   bottom:0;
   position:absolute;
   left:0;
@@ -165,6 +166,19 @@
   overflow-y: auto;
 }
 
+.free-window-content-full {
+  padding-top:calc(60px + var(--gap));
+  padding-left: var(--gap);
+  padding-right: var(--gap);
+  padding-bottom: var(--gap);
+  width:100%;
+  display: flex;
+  justify-content: baseline;
+  align-items: baseline;
+  flex-direction: column;
+  height:fit-content;
+  gap:5px;
+}
 .free-window-content {
   padding-top:calc(60px + var(--gap));
   padding-left: var(--gap);
