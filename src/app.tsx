@@ -47,8 +47,25 @@ function Sterling() {
     const [openCardField, setOpenCardField] = useState<boolean>(false)
 
     const [deckStage, setDeckStage] = useState<number>(0);
+    const [cardDisplay, setCardDisplay] = useState<number>(0)
+
+
     const progressDeck = () => {
-        setDeckStage(deckStage + 1)
+        //0 is front
+        if(cardDisplay == 0) {
+            setCardDisplay(1)
+        }
+        else if(cardDisplay == 1) {
+            setCardDisplay(0)
+            setDeckStage(deckStage + 1)
+
+        }
+
+
+        //1 is back
+
+        //2 is progress deck
+
     }
     const [autoFormat, setAutoFormat] = useState<boolean>(true)
 
@@ -618,7 +635,7 @@ function Sterling() {
                 <div className="free-window-full" style={{display: openGame ? "flex" : "none"}}>
                     <div className="free-window-inner-full">
                         <div className="free-window-header-full">
-                            <p className="font font-slim color-fg font-small">Sterling</p>
+                            <p className="font font-slim color-fg font-small">{cardDisplay}</p>
 
                             <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {setOpenGame(false); setDeckStage(0)}}>x</p>
                         </div>
@@ -627,7 +644,18 @@ function Sterling() {
                                 
 
                                 if(key == deckStage) {
-                                    return <p onClick={()=> progressDeck()}>{i[0]} - {i[1]} {key}</p>
+                                    return <div className="card-view" onClick={()=> {progressDeck()}}>
+                                        <p></p>
+                                        <p style={{display: cardDisplay === 0 ? "block": "none"}} className="font font-regular color-fg font-slim">{i[0]}</p>
+                                        <p style={{display: cardDisplay === 1 ? "block": "none"}} className="font font-regular color-fg font-slim">{i[1]}</p>
+                                        <div className="card-answers" style={{display: cardDisplay === 1 ? "flex": "none"}}>
+                                            <button className="button font-regular color-bg font-slim font">Button</button>
+                                            <button className="button font-regular color-bg font-slim font">Button</button>
+                                            <button className="button font-regular color-bg font-slim font">Button</button>
+                                            <button className="button font-regular color-bg font-slim font">Button</button>
+                                        </div>
+                                        <p style={{display: cardDisplay === 0 ? "block": "none"}}></p>
+                                    </div>
                                 }
                                 else if(cardsFromDeck[explorerTopicSelection].cards.length == deckStage) {
                                     return <p>Something</p>
