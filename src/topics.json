@@ -1,43 +1,20 @@
 {
 	"status": true,
-	"3968c580-f2ee-4795-9471-a08ebd281ed4": {
-		"deckTitle": "Bahar",
+	"00614ccf-66c3-4603-9bbd-1632993cec22": {
+		"deckTitle": "Turkish",
 		"deckStatus": true,
 		"cards": [
 			[
-				"Test",
-				"Test"
+				"Enfes",
+				"Exquisite"
 			],
 			[
-				"Another Test",
-				"Another Test"
+				"Masraf",
+				"Effort"
 			],
 			[
-				"Final Test",
-				"Another Final Test"
-			]
-		]
-	},
-	"0c15b2a5-a44c-446c-b187-953a01e4c095": {
-		"deckTitle": "asidiasdmsa",
-		"deckStatus": false,
-		"cards": []
-	},
-	"e7d0a57d-171b-422d-aeb1-a6b60e66fbcc": {
-		"deckTitle": "Bahar Askim",
-		"deckStatus": true,
-		"cards": [
-			[
-				"What is bahar's birthdate?",
-				"7th September 2004"
-			],
-			[
-				"What is the colour of her eyes",
-				"Dark Hazel Brown"
-			],
-			[
-				"What is her shoe size?",
-				"Size 4 UK"
+				"Mizah",
+				"Humour"
 			]
 		]
 	}

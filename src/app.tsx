@@ -648,13 +648,15 @@ function Sterling() {
                                         <p></p>
                                         <p style={{display: cardDisplay === 0 ? "block": "none"}} className="font font-regular color-fg font-slim">{i[0]}</p>
                                         <p style={{display: cardDisplay === 1 ? "block": "none"}} className="font font-regular color-fg font-slim">{i[1]}</p>
-                                        <div className="card-answers" style={{display: cardDisplay === 1 ? "flex": "none"}}>
-                                            <button className="button font-regular color-bg font-slim font">Button</button>
-                                            <button className="button font-regular color-bg font-slim font">Button</button>
-                                            <button className="button font-regular color-bg font-slim font">Button</button>
-                                            <button className="button font-regular color-bg font-slim font">Button</button>
+                                        <div className="card-no-answers" style={{display: cardDisplay === 1 ? "none" : "block"}}>
+
                                         </div>
-                                        <p style={{display: cardDisplay === 0 ? "block": "none"}}></p>
+                                        <div className="card-answers" style={{display: cardDisplay === 1 ? "flex": "none"}}>
+                                            <button className="btn btn-red font-regular color-bg font-slim font">Bad</button>
+                                            <button className="btn btn-red-accent font-regular color-bg font-slim font">Not Bad</button>
+                                            <button className="btn btn-green-accent font-regular color-bg font-slim font">Not Good</button>
+                                            <button className="btn btn-green font-regular color-bg font-slim font">Good</button>
+                                        </div>
                                     </div>
                                 }
                                 else if(cardsFromDeck[explorerTopicSelection].cards.length == deckStage) {
