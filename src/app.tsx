@@ -738,7 +738,13 @@ function Sterling() {
                     
                                             
                                             <div className="combine">
-                                                <div className="button" onClick={()=> {addACard(i[0], cardFront, cardBack);}}>
+                                                <div className="button" onClick={()=> {
+                                                    if(cardFront == "" || cardBack == "") {
+                                                        setAddDeckMsg([false, "Please fill out both the front and back of the card."])
+                                                    }
+                                                    else {
+                                                        addACard(i[0], cardFront, cardBack);
+                                                    }}}>
                                                     <p className="font font-small color-bg font-slim">Add</p>
                                                 </div> 
                                                 <div className="button" onClick={()=> {setOpenCardField(false); setAddDeckMsg([false, ""])}}>
