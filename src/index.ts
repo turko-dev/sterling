@@ -251,7 +251,8 @@ ipcMain.handle("add-deck", async (_event, deckName: string) => {
       const JSONData = JSON.parse(testData)
       JSONData[v4()] = {
           "deckTitle": deckName,
-          "deckStatus": false
+          "deckStatus": false,
+          "deckMemorised": 0
       }
       JSONData.status = true
   

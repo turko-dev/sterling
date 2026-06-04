@@ -656,7 +656,8 @@ function Sterling() {
                                 
 
                                 if(key == deckStage) {
-                                    return <div className="card-view" onClick={()=> {progressDeck()}}>
+                                    return <div className="card-view" onClick={()=> {
+                                        if(cardDisplay == 0) {progressDeck()}}}>
                                         <p></p>
                                         <p style={{display: cardDisplay === 0 ? "block": "none"}} className="font font-regular color-fg font-slim">{i[0]}</p>
                                         <p style={{display: cardDisplay === 1 ? "block": "none"}} className="font font-regular color-fg font-slim">{i[1]}</p>
