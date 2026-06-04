@@ -325,7 +325,6 @@ function Sterling() {
         }
     }
 
-
     const getTheme = async () => {
         const {success, data} = await (window as any).electronAPI.getTheme()
         
@@ -700,7 +699,7 @@ function Sterling() {
 
                                             <p className="font font-regular color-fg font-slim">{i[1]}</p>
                                             </div>
-                                        <p onClick={()=> {deleteACard(explorerTopicSelection?.toString(), key)}} className="font font-small color-fg font-slim cursor">Delete</p>
+                                        <button onClick={()=> {deleteACard(explorerTopicSelection?.toString(), key)}} className="font font-small color-bg font-slim button">Delete</button>
                                     </div>
                                 </div>
                                 

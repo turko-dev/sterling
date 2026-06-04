@@ -391,7 +391,7 @@ body {
   justify-content:baseline;
   gap:var(--margin);
   padding:var(--margin);
-  z-index:90;
+  z-index:1000;
   color: var(--fg);
 }
 
@@ -427,7 +427,6 @@ body {
   justify-content:space-between;
   align-items:center;
   transition: background-color 0.1s ease-in-out;
-
 }
 .titlebar-menu-item:first-child {
   text-align:left;
