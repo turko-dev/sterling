@@ -275,7 +275,19 @@ function Sterling() {
     }, [explorerTopicSelection])
    
 
-    
+    const shuffleDeck = () => {
+        let array = cardsFromDeck[explorerTopicSelection].cards
+            for (let i = array.length - 1; i > 0; i--) {
+
+            // Generate Random Index
+            const j = Math.floor(Math.random() * (i + 1));
+
+            // Swap elements
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+
+        cardsFromDeck[explorerTopicSelection].cards = array
+    }
 
     //Get JSON
     const getDecksFile = async () => {
@@ -745,7 +757,7 @@ function Sterling() {
                                         <p className="font font-regular color-fg font-slim">{Object.keys(i[1].cards).length} cards.</p>
                                     </div>
                                     <div className="combine">
-                                        <div className="primary-button" onClick={()=> {setOpenGame(true)}}>
+                                        <div className="primary-button" onClick={()=> {setOpenGame(true); shuffleDeck()}}>
                                             <p className="font font-small color-bg font-slim">Start</p>
                                         </div>
                                         <div className="button" onClick={()=> setOpenCardField(true)}>
