@@ -1,1 +1,24 @@
-{"status":true,"00614ccf-66c3-4603-9bbd-1632993cec22":{"deckTitle":"Turkish","deckStatus":true,"deckMemorised":0,"cards":[["Enfes","Exquisite"],["Masraf","Effort"],["Mizah","Humour"]]},"ce85623b-baf3-45a1-bb6b-8b5c040eb41e":{"deckTitle":"Another","deckStatus":false,"deckMemorised":0,"cards":[]}}
+{
+	"status": true,
+	"00614ccf-66c3-4603-9bbd-1632993cec22": {
+		"deckTitle": "Turkish",
+		"deckStatus": true,
+		"deckMemorised": 0,
+		"cards": [
+			[
+				"Mizah",
+				"Humour"
+			],
+			[
+				"Enfes",
+				"Exquisite"
+			]
+		]
+	},
+	"ce85623b-baf3-45a1-bb6b-8b5c040eb41e": {
+		"deckTitle": "Another",
+		"deckStatus": false,
+		"deckMemorised": 0,
+		"cards": []
+	}
+}

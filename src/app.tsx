@@ -664,10 +664,10 @@ function Sterling() {
 
                                         </div>
                                         <div className="card-answers" style={{display: cardDisplay === 1 ? "flex": "none"}}>
-                                            <button className="btn btn-red font-regular color-bg font-slim font">Bad</button>
-                                            <button className="btn btn-red-accent font-regular color-bg font-slim font">Not Bad</button>
-                                            <button className="btn btn-green-accent font-regular color-bg font-slim font">Not Good</button>
-                                            <button className="btn btn-green font-regular color-bg font-slim font">Good</button>
+                                            <button className="btn btn-red font-regular color-bg font-slim font" onClick={()=> {progressDeck()}}>Bad</button>
+                                            <button className="btn btn-red-accent font-regular color-bg font-slim font" onClick={()=> {progressDeck()}}>Not Good</button>
+                                            <button className="btn btn-green-accent font-regular color-bg font-slim font" onClick={()=> {progressDeck()}}>Not Bad</button>
+                                            <button className="btn btn-green font-regular color-bg font-slim font" onClick={()=> {progressDeck()}}>Good</button>
                                         </div>
                                     </div>
                                 }
