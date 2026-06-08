@@ -6,5 +6,14 @@
 <p>The app categorises decks and cards respectively in an explorer panel which can be used to access, modify, delete and add decks and cards to the user's preference. User's may also export and import decks in a JSON (JavaScript Object Notation) format which additional paves the way for online transfers of decks to be made possible perhaps in the near future (June 01 2026)</p>
 
 
+<h3>Preview</h3>
+<img src="https://github.com/turko-dev/sterling/blob/master/assets/sterling-explorer.png" height=500 />
+<img src="https://github.com/turko-dev/sterling/blob/master/assets/sterling-deck.png" height=500 />
+<img src="https://github.com/turko-dev/sterling/blob/master/assets/sterling-add-card.png" height=500 />
+<img src="https://github.com/turko-dev/sterling/blob/master/assets/sterling-card-1.png" height=500 />
+<img src="https://github.com/turko-dev/sterling/blob/master/assets/sterling-card-1-back.png" height=500 />
+<img src="https://github.com/turko-dev/sterling/blob/master/assets/sterling-modify-deck.png" height=500 />
+
+
 <h3>Citations</h3>
 <p>Vesik, K. and Hall, K.C. (2024) Improved student learning through active retrieval practice and random-sampled exams: Canadian Journal of Linguistics/Revue canadienne de linguistique, Cambridge Core. Available at: https://www.cambridge.org/core/journals/canadian-journal-of-linguistics-revue-canadienne-de-linguistique/article/improved-student-learning-through-active-retrieval-practice-and-randomsampled-exams/0BC0D7C392693E4CCD52C78D8077E320 (Accessed: 01 June 2026). </p>
