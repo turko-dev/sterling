@@ -38,9 +38,10 @@ function Sterling() {
         }
     }
 
-    const triggerHelpAutoFormat = () => {
+    const [helpAutoFormat, triggerHelpAutoFormat] = useState<boolean>(false);
 
-    }
+
+
 
     const [addDeckMsg, setAddDeckMsg] = useState<any[]>([false, ""])
 
@@ -446,29 +447,29 @@ function Sterling() {
                     <div className="titlebar-menu" style={{display : decksMenu ? 'flex' : 'none'}}>
                         <div className="titlebar-menu-item" onClick={()=> {setOpenTopicField(true)}}>
                             <p className="font font-small color-darkgrey font-slim">New Deck</p>
-                            <p className="font font-small color-lightgrey font-slim">Ctrl + D</p>
+                            <p className="font font-small color-lightgrey font-slim">N/a</p>
 
                         </div>
                         <div className="titlebar-menu-item" style={{display: explorerKey != 0 ? "flex": "none"}} onClick={()=> {setOpenCardField(true)}}>
                             <p className="font font-small color-darkgrey font-slim">New Card</p>
-                            <p className="font font-small color-lightgrey font-slim">Ctrl + T</p>
+                            <p className="font font-small color-lightgrey font-slim">N/a</p>
 
                         </div>
                         <div className="titlebar-menu-item-separator"></div>
                         <div className="titlebar-menu-item">
                             <p className="font font-small color-darkgrey font-slim">Load Deck</p>
-                            <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
+                            <p className="font font-small color-lightgrey font-slim">Coming Soon</p>
 
                         </div>
                         <div className="titlebar-menu-item">
                             <p className="font font-small color-darkgrey font-slim">Search Pre-Made Decks</p>
-                            <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
+                            <p className="font font-small color-lightgrey font-slim">Coming Soon</p>
 
                         </div>
                         <div className="titlebar-menu-item-separator"></div>
                         <div className="titlebar-menu-item" onClick={()=> {setDefaultAutoFormat(!defaultAutoFormat)}}>
                             <p className="font font-small color-darkgrey font-slim">{defaultAutoFormat ? "Disable" : "Enable"} Default Autoformat</p>
-                            <p className="font font-small color-lightgrey font-slim">Ctrl + O</p>
+                            <p className="font font-small color-lightgrey font-slim">N/a</p>
 
                         </div>
                     </div>
@@ -508,14 +509,14 @@ function Sterling() {
                     <p className="font font-small color-darkgrey font-slim">Help</p>
 
                     <div className="titlebar-menu" style={{display : helpMenu ? 'flex' : 'none'}}>
-                        <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Menu Item 1</p>
+                        <div className="titlebar-menu-item" onClick={()=> triggerHelpAutoFormat(true)}>
+                            <p className="font font-small color-darkgrey font-slim">What is AutoFormat?</p>
                         </div>
                         <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Menu Item 1</p>
+                            <p className="font font-small color-darkgrey font-slim">Learn how to use Sterling (Coming Soon)</p>
                         </div>
                         <div className="titlebar-menu-item">
-                            <p className="font font-small color-darkgrey font-slim">Menu Item 1</p>
+                            <p className="font font-small color-darkgrey font-slim">Learn about the author (Coming Soon)</p>
                         </div>
                     </div>
 
@@ -640,7 +641,8 @@ function Sterling() {
                 <div className="explorer-adjustment" style={{display : explorerMenu ? 'flex' : 'none'}} onPointerDown={() => setIsResizing(true)}>
                     
                 </div>
-
+                
+                
                 
 
                 <div className="free-window-full" style={{display: openGame ? "flex" : "none"}}>
@@ -676,6 +678,19 @@ function Sterling() {
                                 }
                             }) : "Not Allowed"}
 
+                        </div>
+                    </div>
+                </div>
+
+                <div className="popup-window-wrapper" style={{display: helpAutoFormat ? "flex":"none"}}>
+
+                    <div className="popup-window">
+                        <div className="popup-window-header">
+                            <p className="font font-slim color-bg font-small">What is Auto Format?</p>
+                            <p className="font font-slim color-primary font-medium" style={{cursor:"pointer"}} onClick={()=> {triggerHelpAutoFormat(false)}}>x</p>
+                        </div>
+                        <div className="popup-window-content">
+                            <p className="font font-slim color-fg font-regular">Auto Format is a feature that automatically formats the text you input for your cards. It capitalizes the first letter of the front and back, ensures there is proper spacing, and adds a period at the end if there isn't one already. This can help make your cards look more consistent and easier to read.</p>
                         </div>
                     </div>
                 </div>
@@ -723,7 +738,7 @@ function Sterling() {
                                                     <p style={{transition: "all 0.25s ease-in-out"}} className="font font-small color-fg font-slim">{autoFormat ? "On" : "Off"}</p>
                                                     <div className={`${autoFormat ? "green-dot" : "red-dot"}`}></div>
                                                 </div>
-                                                <p onClick={()=> {triggerHelpAutoFormat()}} className="font font-small color-fg font-slim underline">What's this?</p>
+                                                <p onClick={()=> {triggerHelpAutoFormat(true)}} className="font font-small color-fg font-slim underline">What's this?</p>
                                             
                                             </div>
                                             <div className="downbine">
@@ -794,7 +809,7 @@ function Sterling() {
                                                     <p style={{transition: "all 0.25s ease-in-out"}} className="font font-small color-fg font-slim">{autoFormat ? "On" : "Off"}</p>
                                                     <div className={`${autoFormat ? "green-dot" : "red-dot"}`}></div>
                                                 </div>
-                                                <p onClick={()=> {triggerHelpAutoFormat()}} className="font font-small color-fg font-slim underline">What's this?</p>
+                                                <p onClick={()=> {triggerHelpAutoFormat(true)}} className="font font-small color-fg font-slim underline">What's this?</p>
                                             
                                             </div>
                                             <div className="downbine">
@@ -842,18 +857,13 @@ function Sterling() {
             </div>
             <div className="statusbar">
                 <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{explorerTopicSelection}</p>
+                    <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
                 </div>
                 <div className="statusbar-item">
                     <p className="font font-super-small color-bg font-slim">{explorerKey}</p>
                 </div>
 
-                <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim">{errorMsg}</p>
-                </div>
-                <div className="statusbar-item">
-                    <p className="font font-super-small color-bg font-slim"></p>
-                </div>
+                
                 
             </div>
             
